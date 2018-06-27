@@ -1,7 +1,7 @@
-#ifndef VECTOR2F_H
-#define VECTOR2F_H
+#pragma once
 
-#include <math.h> 
+
+#include <cmath> 
 
 class Vector2f
 {
@@ -18,26 +18,23 @@ public:
 		myY = anY;
 	}
 
-	const Vector2f Vector2f::operator-(const Vector2f &other) const 
+	Vector2f operator-(const Vector2f& other) const 
 	{
-		Vector2f v(myX - other.myX, myY - other.myY);
-		return v;
+		return {myX - other.myX, myY - other.myY};
 	}
 
-	const Vector2f Vector2f::operator+(const Vector2f &other) const 
+	Vector2f operator+(const Vector2f& other) const 
 	{
-		Vector2f v(myX + other.myX, myY + other.myY);
-		return v;
+		return {myX + other.myX, myY + other.myY};
 	}
 
 	
-	const Vector2f Vector2f::operator*(const Vector2f& other) const 
+	Vector2f operator*(const Vector2f& other) const 
 	{
-		Vector2f v(myX*other.myX, myY*other.myY);
-		return v;
+		return {myX*other.myX, myY*other.myY};
 	}
 
-	Vector2f& Vector2f::operator+=(const Vector2f &other) 
+	Vector2f& operator+=(const Vector2f& other) 
 	{
 		myX = myX + other.myX;
 		myY = myY + other.myY;
@@ -45,7 +42,7 @@ public:
 		return *this;
 	}
 
-	Vector2f& Vector2f::operator*=(const float aFloat) 
+	Vector2f& operator*=(const float aFloat) 
 	{
 		myX *= aFloat;
 		myY *= aFloat;
@@ -53,7 +50,7 @@ public:
 		return *this;
 	}
 
-	Vector2f& Vector2f::operator/=(const float aFloat) 
+	Vector2f& operator/=(const float aFloat) 
 	{
 		myX /= aFloat;
 		myY /= aFloat;
@@ -61,20 +58,19 @@ public:
 		return *this;
 	}
 
-	const Vector2f Vector2f::operator*(const float aValue) const 
+	Vector2f operator*(const float aValue) const 
 	{
-		Vector2f v(myX * aValue, myY * aValue);
-		return v;
+		return {myX * aValue, myY * aValue};
 	}
 
-	float Vector2f::Length() const
+	float Length() const
 	{
 		return sqrt(myX*myX + myY*myY);
 	}
 
-	void Vector2f::Normalize()
+	void Normalize()
 	{
-		float length = Length();
+		const float length = Length();
 
 		if (length > 0.f)
 			*this /= length;
@@ -83,5 +79,3 @@ public:
 	float myX;
 	float myY;
 };
-
-#endif // VECTOR2F_H

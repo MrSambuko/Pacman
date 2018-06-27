@@ -7,7 +7,3 @@ PathmapTile::PathmapTile(int anX, int anY, bool aIsBlockingFlag)
 ,myIsVisitedFlag(false)
 {
 }
-
-PathmapTile::~PathmapTile(void)
-{
-}

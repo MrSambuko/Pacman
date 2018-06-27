@@ -13,10 +13,6 @@ Ghost::Ghost(const Vector2f& aPosition)
 	myDesiredMovementY = -1;
 }
 
-Ghost::~Ghost(void)
-{
-}
-
 void Ghost::Die(World* aWorld)
 {
 	myPath.clear();
@@ -26,8 +22,8 @@ void Ghost::Die(World* aWorld)
 void Ghost::Update(float aTime, World* aWorld)
 {
 	float speed = 30.f;
-	int nextTileX = GetCurrentTileX() + myDesiredMovementX;
-	int nextTileY = GetCurrentTileY() + myDesiredMovementY;
+	const int nextTileX = GetCurrentTileX() + myDesiredMovementX;
+	const int nextTileY = GetCurrentTileY() + myDesiredMovementY;
 
 	if (myIsDeadFlag)
 		speed = 120.f;
@@ -68,11 +64,11 @@ void Ghost::Update(float aTime, World* aWorld)
 		}
 	}
 
-	int tileSize = 22;
-	Vector2f destination(myNextTileX * tileSize, myNextTileY * tileSize);
+	constexpr const int tileSize = 22;
+	const Vector2f destination(static_cast<float>(myNextTileX * tileSize), static_cast<float>(myNextTileY * tileSize));
 	Vector2f direction = destination - myPosition;
 
-	float distanceToMove = aTime * speed;
+	const float distanceToMove = aTime * speed;
 
 	if (distanceToMove > direction.Length())
 	{
@@ -95,9 +91,9 @@ void Ghost::SetImage(const char* anImage)
 void Ghost::Draw(Drawer* aDrawer)
 {
 	if (myIsDeadFlag)
-		aDrawer->Draw("Ghost_Dead_32.png", (int)myPosition.myX + 220, (int)myPosition.myY + 60);
+		aDrawer->Draw("Ghost_Dead_32.png", static_cast<int>(myPosition.myX) + 220, static_cast<int>(myPosition.myY) + 60);
 	else if (myIsClaimableFlag)
-		aDrawer->Draw("Ghost_Vulnerable_32.png", (int)myPosition.myX + 220, (int)myPosition.myY + 60);
+		aDrawer->Draw("Ghost_Vulnerable_32.png", static_cast<int>(myPosition.myX) + 220, static_cast<int>(myPosition.myY) + 60);
 	else
-		aDrawer->Draw(myImage, (int)myPosition.myX + 220, (int)myPosition.myY + 60);
+		aDrawer->Draw(myImage, static_cast<int>(myPosition.myX) + 220, static_cast<int>(myPosition.myY) + 60);
 }

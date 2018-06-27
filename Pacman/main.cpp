@@ -4,7 +4,6 @@
 #include "assert.h"
 #include "pacman.h"
 #include "drawer.h"
-#include <iostream>
 
 int main(int argc, char **argv)
 {
@@ -35,12 +34,12 @@ int main(int argc, char **argv)
 	Drawer* drawer = Drawer::Create(window, renderer);
 	Pacman* pacman = Pacman::Create(drawer);
 
-	float lastFrame = (float) SDL_GetTicks() * 0.001f;
+	float lastFrame = static_cast<float>(SDL_GetTicks()) * 0.001f;
 	SDL_Event event;
 	while (SDL_PollEvent(&event) >= 0)
 	{
-		float currentFrame = (float) SDL_GetTicks() * 0.001f;
-		float elapsedTime = currentFrame - lastFrame;
+		const float currentFrame = static_cast<float>(SDL_GetTicks()) * 0.001f;
+		const float elapsedTime = currentFrame - lastFrame;
 
 		if (!pacman->Update(elapsedTime))
 			break;

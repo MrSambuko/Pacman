@@ -6,18 +6,14 @@ Avatar::Avatar(const Vector2f& aPosition)
 
 }
 
-Avatar::~Avatar(void)
-{
-}
-
 void Avatar::Update(float aTime)
 {
-	int tileSize = 22;
+	constexpr const int tileSize = 22;
 
-	Vector2f destination(myNextTileX * tileSize, myNextTileY * tileSize);
+	const Vector2f destination(static_cast<float>(myNextTileX * tileSize), static_cast<float>(myNextTileY * tileSize));
 	Vector2f direction = destination - myPosition;
 
-	float distanceToMove = aTime * 30.f;
+	const float distanceToMove = aTime * 30.f;
 
 	if (distanceToMove > direction.Length())
 	{

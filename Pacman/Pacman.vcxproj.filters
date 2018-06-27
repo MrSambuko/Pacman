@@ -60,9 +60,6 @@
     <ClCompile Include="Drawer.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Vector2f.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>

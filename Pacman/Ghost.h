@@ -1,5 +1,4 @@
-#ifndef GHOST_H
-#define GHOST_H
+#pragma once
 
 #include <list>
 #include "MovableGameEntity.h"
@@ -11,7 +10,6 @@ class Ghost : public MovableGameEntity
 {
 public:
 	Ghost(const Vector2f& aPosition);
-	~Ghost(void);
 
 	void Update(float aTime, World* aWorld);
 
@@ -32,5 +30,3 @@ protected:
 	std::list<PathmapTile*> myPath;
 
 };
-
-#endif // GHOST_H

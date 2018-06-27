@@ -10,7 +10,7 @@ Drawer* Drawer::Create(SDL_Window* aWindow, SDL_Renderer* aRenderer)
 	if (!drawer->Init())
 	{
 		delete drawer;
-		drawer = NULL;
+		drawer = nullptr;
 	}
 
 	return drawer;
@@ -22,60 +22,54 @@ Drawer::Drawer(SDL_Window* aWindow, SDL_Renderer* aRenderer)
 {
 }
 
-Drawer::~Drawer(void)
+
+bool Drawer::Init() const
 {
+	return myWindow != nullptr;
 }
 
-bool Drawer::Init()
-{
-	if (!myWindow)
-		return false;
-
-	return true;
-}
-
-void Drawer::Draw(const char* anImage, int aCellX, int aCellY)
+void Drawer::Draw(const char* anImage, int aCellX, int aCellY) const
 {
 	SDL_Surface* surface = IMG_Load( anImage ) ;
 
-	if (!surface)
+	if (surface == nullptr)
 		return;
 
 	SDL_Texture* optimizedSurface = SDL_CreateTextureFromSurface(myRenderer, surface);
 
-    SDL_Rect sizeRect;
-    sizeRect.x = 0 ;
-    sizeRect.y = 0 ;
-    sizeRect.w = surface->w ;
-    sizeRect.h = surface->h ;
+	SDL_Rect sizeRect;
+	sizeRect.x = 0 ;
+	sizeRect.y = 0 ;
+	sizeRect.w = surface->w ;
+	sizeRect.h = surface->h ;
 
-    SDL_Rect posRect ;
-    posRect.x = aCellX;
-    posRect.y = aCellY;
+	SDL_Rect posRect ;
+	posRect.x = aCellX;
+	posRect.y = aCellY;
 	posRect.w = sizeRect.w;
 	posRect.h = sizeRect.h;
 
 	SDL_RenderCopy(myRenderer, optimizedSurface, &sizeRect, &posRect);	
 }
 
-void Drawer::DrawText(const char* aText, const char* aFontFile, int aX, int aY)
+void Drawer::DrawText(const char* aText, const char* aFontFile, int aX, int aY) const
 {
 	TTF_Font* font=TTF_OpenFont(aFontFile, 24);
 
-	SDL_Color fg={255,0,0,255};
+	const SDL_Color fg={255,0,0,255};
 	SDL_Surface* surface = TTF_RenderText_Solid(font, aText, fg);
 
 	SDL_Texture* optimizedSurface = SDL_CreateTextureFromSurface(myRenderer, surface);
 
-    SDL_Rect sizeRect;
-    sizeRect.x = 0 ;
-    sizeRect.y = 0 ;
-    sizeRect.w = surface->w ;
-    sizeRect.h = surface->h ;
+	SDL_Rect sizeRect;
+	sizeRect.x = 0;
+	sizeRect.y = 0;
+	sizeRect.w = surface->w;
+	sizeRect.h = surface->h;
 
-    SDL_Rect posRect ;
-    posRect.x = aX;
-    posRect.y = aY;
+	SDL_Rect posRect ;
+	posRect.x = aX;
+	posRect.y = aY;
 	posRect.w = sizeRect.w;
 	posRect.h = sizeRect.h;
 

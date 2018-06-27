@@ -1,5 +1,5 @@
-#ifndef PACMAN_H
-#define PACMAN_H
+#pragma once
+
 
 #include "Vector2f.h"
 
@@ -13,21 +13,19 @@ class Pacman
 {
 public:
 	static Pacman* Create(Drawer* aDrawer);
-	~Pacman(void);
 
 	bool Update(float aTime);
-	bool Draw();
+	bool Draw() const;
 
 private:
 	Pacman(Drawer* aDrawer);
-	bool Init();
+	bool Init() const;
 	bool UpdateInput();
-	void MoveAvatar();
-	bool CheckEndGameCondition();
+	void MoveAvatar() const;
+	bool CheckEndGameCondition() const;
 
 	Drawer* myDrawer;
 
-	float myTimeToNextUpdate;
 	float myGhostGhostCounter;
 
 	int myLives;
@@ -41,5 +39,3 @@ private:
 	World* myWorld;
 
 };
-
-#endif // PACMAN_H

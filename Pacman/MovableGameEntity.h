@@ -1,5 +1,4 @@
-#ifndef MOVABLEGAMEENTITY_H
-#define MOVABLEGAMEENTITY_H
+#pragma once
 
 #include "GameEntity.h"
 #include "Vector2f.h"
@@ -8,13 +7,12 @@ class MovableGameEntity : public GameEntity
 {
 public:
 	MovableGameEntity(const Vector2f& aPosition, const char* anImage);
-	~MovableGameEntity(void);
 
 	void SetNextTile(int anX, int anY);
 	int GetCurrentTileX() const { return myCurrentTileX; }
 	int GetCurrentTileY() const { return myCurrentTileY; }
 
-	bool IsAtDestination();
+	bool IsAtDestination() const;
 
 protected:
 
@@ -25,5 +23,3 @@ protected:
 	int myNextTileY;
 
 };
-
-#endif // MOVABLEGAMEENTITY_H

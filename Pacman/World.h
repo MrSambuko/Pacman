@@ -1,5 +1,5 @@
-#ifndef WORLD_H
-#define WORLD_H
+#pragma once
+
 
 #include <list>
 #include "Vector2f.h"
@@ -13,9 +13,6 @@ class Cherry;
 class World
 {
 public:
-	World(void);
-	~World(void);
-
 	void Init();
 
 	void Draw(Drawer* aDrawer);
@@ -46,5 +43,3 @@ private:
 	std::list<Cherry*> myCherry;
 
 };
-
-#endif // WORLD_H

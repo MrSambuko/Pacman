@@ -1,5 +1,4 @@
-#ifndef AVATAR_H
-#define AVATAR_H
+#pragma once
 
 #include "MovableGameEntity.h"
 #include "Vector2f.h"
@@ -11,10 +10,4 @@ public:
 	~Avatar(void);
 
 	void Update(float aTime);
-
-private:
-
-
 };
-
-#endif //AVATAR_H
