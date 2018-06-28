@@ -8,6 +8,7 @@
 #include "Drawer.h"
 #include "Common.h"
 #include <set>
+#include <algorithm>
 
 
 void World::Init()
@@ -30,7 +31,7 @@ bool World::InitPathmap()
 			for (unsigned int i = 0; i < line.length(); i++)
 			{
 				const auto&& tile = std::make_shared<PathmapTile>(i, lineIndex, (line[i] == 'x'));
-				myPathmapTiles.emplace_back(tile);
+				myPathmapTiles.emplace(tile);
 			}
 
 			lineIndex++;
@@ -56,7 +57,7 @@ bool World::InitDots()
 				if (line[i] == '.')
 				{
 					const auto&& ptr = std::make_shared<Dot>(Vector2f(static_cast<float>(i*TILE_SIZE), static_cast<float>(lineIndex*TILE_SIZE)));
-					myDots.emplace_back(ptr);
+					myDots.emplace(ptr);
 				}
 			}
 
@@ -84,7 +85,7 @@ bool World::InitBigDots()
 				{
 					const auto&& ptr = std::make_shared<BigDot>(Vector2f(static_cast<float>(i*TILE_SIZE), 
 																		 static_cast<float>(lineIndex*TILE_SIZE)));
-					myBigDots.emplace_back(ptr);
+					myBigDots.emplace(ptr);
 				}
 			}
 
@@ -113,13 +114,9 @@ void World::Draw(Drawer* aDrawer)
 
 bool World::TileIsValid(int anX, int anY)
 {
-	for (const auto& tile : myPathmapTiles )
-	{
-		if (anX == tile->myX && anY == tile->myY && !tile->myIsBlockingFlag)
-			return true;
-	}
+	const auto it = myPathmapTiles.find(std::make_shared<PathmapTile>(anX, anY, false));
 
-	return false;
+	return it != myPathmapTiles.end();
 }
 
 bool World::HasIntersectedDot(const Vector2f& aPosition)
@@ -128,7 +125,7 @@ bool World::HasIntersectedDot(const Vector2f& aPosition)
 	{
 		if ((dot->GetPosition() - aPosition).Length() < 5.f)
 		{
-			myDots.remove(dot);
+			myDots.erase(dot);
 			return true;
 		}
 	}
@@ -142,7 +139,7 @@ bool World::HasIntersectedBigDot(const Vector2f& aPosition)
 	{
 		if ((dot->GetPosition() - aPosition).Length() < 5.f)
 		{
-			myBigDots.remove(dot);
+			myBigDots.erase(dot);
 			return true;
 		}
 	}
@@ -157,8 +154,8 @@ bool World::HasIntersectedCherry(const Vector2f& aPosition)
 
 void World::GetPath(int aFromX, int aFromY, int aToX, int aToY, std::list<PathmapTilePtr>& aList)
 {
-	PathmapTilePtr fromTile = GetTile(aFromX, aFromY);
-	PathmapTilePtr toTile = GetTile(aToX, aToY);
+	const auto fromTile = GetTile(aFromX, aFromY);
+	const auto toTile = GetTile(aToX, aToY);
 	
 	for (const auto& tile : myPathmapTiles)
 	{
@@ -170,18 +167,22 @@ void World::GetPath(int aFromX, int aFromY, int aToX, int aToY, std::list<Pathma
 
 PathmapTilePtr World::GetTile(int aFromX, int aFromY)
 {
-	for (const auto& tile : myPathmapTiles )
-	{
-		if (tile->myX == aFromX && tile->myY == aFromY)
-		{
-			return tile;
-		}
-	}
+	// as we don't care for flag search for flase & true same way
+	const auto tile = makePathTilePtr(aFromX, aFromY, true);
+	const auto end = myPathmapTiles.end();
+	auto it = myPathmapTiles.find(tile);
 
-	return nullptr;
+	if (it == end)
+	{
+		tile->myIsBlockingFlag = false;
+		it = myPathmapTiles.find(tile);
+		if (it == end)
+			return nullptr;
+	}
+	return *it;
 }
 
-bool World::ListDoesNotContain(PathmapTilePtr aFromTile, std::list<PathmapTilePtr>& aList)
+bool World::ListDoesNotContain(PathmapTilePtr& aFromTile, std::list<PathmapTilePtr>& aList)
 {
 	for (const auto& tile : aList)
 	{
@@ -214,19 +215,19 @@ bool World::Pathfind(PathmapTilePtr aFromTile, PathmapTilePtr aToTile, std::list
 
 	std::set<PathmapTilePtr, bool(*)(const PathmapTilePtr&, const PathmapTilePtr&)> neighborList(&SortFromGhostSpawn);
 
-	const auto&& up = GetTile(aFromTile->myX, aFromTile->myY - 1);
+	auto&& up = GetTile(aFromTile->myX, aFromTile->myY - 1);
 	if (up && !up->myIsVisitedFlag && !up->myIsBlockingFlag && ListDoesNotContain(up, aList))
 		neighborList.emplace(up);
 
-	const auto&& down = GetTile(aFromTile->myX, aFromTile->myY + 1);
+	auto&& down = GetTile(aFromTile->myX, aFromTile->myY + 1);
 	if (down && !down->myIsVisitedFlag && !down->myIsBlockingFlag && ListDoesNotContain(down, aList))
 		neighborList.emplace(down);
 
-	const auto&& right = GetTile(aFromTile->myX + 1, aFromTile->myY);
+	auto&& right = GetTile(aFromTile->myX + 1, aFromTile->myY);
 	if (right && !right->myIsVisitedFlag && !right->myIsBlockingFlag && ListDoesNotContain(right, aList))
 		neighborList.emplace(right);
 
-	const auto&& left = GetTile(aFromTile->myX - 1, aFromTile->myY);
+	auto&& left = GetTile(aFromTile->myX - 1, aFromTile->myY);
 	if (left && !left->myIsVisitedFlag && !left->myIsBlockingFlag && ListDoesNotContain(left, aList))
 		neighborList.emplace(left);
 

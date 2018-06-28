@@ -64,8 +64,7 @@ void Ghost::Update(float aTime, World* aWorld)
 		}
 	}
 
-	constexpr const int tileSize = 22;
-	const Vector2f destination(static_cast<float>(myNextTileX * tileSize), static_cast<float>(myNextTileY * tileSize));
+	const Vector2f destination(static_cast<float>(myNextTileX * TILE_SIZE), static_cast<float>(myNextTileY * TILE_SIZE));
 	Vector2f direction = destination - myPosition;
 
 	const float distanceToMove = aTime * speed;

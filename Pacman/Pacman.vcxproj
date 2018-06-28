@@ -128,7 +128,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MovableGameEntity.cpp" />
     <ClCompile Include="Pacman.cpp" />
-    <ClCompile Include="PathmapTile.cpp" />
     <ClCompile Include="StaticGameEntity.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>

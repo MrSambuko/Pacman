@@ -54,9 +54,6 @@
     <ClCompile Include="MovableGameEntity.cpp">
       <Filter>Game\Game entities\Movable</Filter>
     </ClCompile>
-    <ClCompile Include="PathmapTile.cpp">
-      <Filter>Game\World</Filter>
-    </ClCompile>
     <ClCompile Include="World.cpp">
       <Filter>Game\World</Filter>
     </ClCompile>
