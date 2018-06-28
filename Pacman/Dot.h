@@ -9,6 +9,6 @@
 class Dot : public StaticGameEntity
 {
 public:
-	Dot(Vector2f aPosition);
+	Dot(Vector2f aPosition, Drawer* aDrawer);
 };
 using DotPtr = std::shared_ptr<Dot>;

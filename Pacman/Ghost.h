@@ -9,7 +9,7 @@ class World;
 class Ghost : public MovableGameEntity
 {
 public:
-	Ghost(const Vector2f& aPosition);
+	Ghost(const Vector2f& aPosition, Drawer* aDrawer);
 
 	void Update(float aTime, World* aWorld);
 
@@ -20,8 +20,7 @@ public:
 
 	void Die(World* aWorld);
 
-	void Draw(Drawer* aDrawer);
-
+	void Draw() const override;
 protected:
 
 	int myDesiredMovementX;

@@ -7,6 +7,6 @@
 class Cherry : public StaticGameEntity
 {
 public:
-	Cherry(Vector2f aPosition);
+	Cherry(Vector2f aPosition, Drawer* aDrawer);
 };
 using CherryPtr = std::shared_ptr<Cherry>;

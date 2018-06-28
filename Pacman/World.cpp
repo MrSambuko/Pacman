@@ -10,9 +10,13 @@
 #include <set>
 #include <algorithm>
 
-
+namespace
+{
+	const char FIELD[] = "playfield.png";
+}
 void World::Init()
 {
+	myDrawer->registerImage(FIELD);
 	InitPathmap();
 	InitDots();
 	InitBigDots();
@@ -56,7 +60,8 @@ bool World::InitDots()
 			{
 				if (line[i] == '.')
 				{
-					const auto&& ptr = std::make_shared<Dot>(Vector2f(static_cast<float>(i*TILE_SIZE), static_cast<float>(lineIndex*TILE_SIZE)));
+					const auto&& ptr = std::make_shared<Dot>(Vector2f(static_cast<float>(i*TILE_SIZE), static_cast<float>(lineIndex*TILE_SIZE)),
+															 myDrawer);
 					myDots.emplace(ptr);
 				}
 			}
@@ -84,7 +89,8 @@ bool World::InitBigDots()
 				if (line[i] == 'o')
 				{
 					const auto&& ptr = std::make_shared<BigDot>(Vector2f(static_cast<float>(i*TILE_SIZE), 
-																		 static_cast<float>(lineIndex*TILE_SIZE)));
+																		 static_cast<float>(lineIndex*TILE_SIZE)),
+																myDrawer);
 					myBigDots.emplace(ptr);
 				}
 			}
@@ -97,19 +103,14 @@ bool World::InitBigDots()
 	return true;
 }
 
-void World::Draw(Drawer* aDrawer)
+void World::Draw() const
 {
-	aDrawer->Draw("playfield.png");
-
+	myDrawer->Draw(FIELD);
 	for (const auto& dot : myDots)
-	{
-		dot->Draw(aDrawer);
-	}
+		dot->Draw();
 
 	for (const auto& dot : myBigDots)
-	{
-		dot->Draw(aDrawer);
-	}
+		dot->Draw();
 }
 
 bool World::TileIsValid(int anX, int anY)

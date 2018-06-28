@@ -6,7 +6,7 @@
 class MovableGameEntity : public GameEntity
 {
 public:
-	MovableGameEntity(const Vector2f& aPosition, const char* anImage);
+	MovableGameEntity(const Vector2f& aPosition, Drawer* aDrawer, std::string&& aImage);
 
 	void SetNextTile(int anX, int anY);
 	int GetCurrentTileX() const { return myCurrentTileX; }

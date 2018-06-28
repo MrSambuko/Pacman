@@ -7,5 +7,5 @@
 class StaticGameEntity : public GameEntity
 {
 public:
-	StaticGameEntity(Vector2f aPosition, const char* anImage);
+	StaticGameEntity(Vector2f aPosition, Drawer* aDrawer, std::string&& anImage);
 };

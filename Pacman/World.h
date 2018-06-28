@@ -15,9 +15,10 @@ class Drawer;
 class World
 {
 public:
+	World(Drawer* drawer) : myDrawer(drawer) {}
 	void Init();
 
-	void Draw(Drawer* aDrawer);
+	void Draw() const;
 	bool TileIsValid(int anX, int anY);
 
 	bool HasIntersectedDot(const Vector2f& aPosition);
@@ -38,6 +39,8 @@ private:
 	bool InitPathmap();
 	bool InitDots();
 	bool InitBigDots();
+
+	Drawer* myDrawer = nullptr;
 
 	std::unordered_set<PathmapTilePtr, PathmapTile::Hash, PathmapTile::Compare> myPathmapTiles;
 	std::unordered_set<DotPtr> myDots;

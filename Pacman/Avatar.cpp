@@ -1,8 +1,8 @@
 #include "Avatar.h"
 #include "Common.h"
 
-Avatar::Avatar(const Vector2f& aPosition)
-: MovableGameEntity(aPosition, "open_32.png")
+Avatar::Avatar(const Vector2f& aPosition, Drawer* aDrawer)
+: MovableGameEntity(aPosition, aDrawer, "open_32.png")
 {
 
 }

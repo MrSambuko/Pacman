@@ -3,14 +3,24 @@
 #include "PathmapTile.h"
 #include "Drawer.h"
 
-Ghost::Ghost(const Vector2f& aPosition)
-: MovableGameEntity(aPosition, "ghost_32.png")
+namespace
+{
+	const char GHOST[] = "ghost_32.png";
+	const char GHOST_DEAD[] = "Ghost_Dead_32.png";
+	const char GHOST_VULNERABLE[] = "Ghost_Vulnerable_32.png";
+}
+
+Ghost::Ghost(const Vector2f& aPosition, Drawer* aDrawer)
+: MovableGameEntity(aPosition, aDrawer, GHOST)
 {
 	myIsClaimableFlag = false;
 	myIsDeadFlag = false;
 
 	myDesiredMovementX = 0;
 	myDesiredMovementY = -1;
+
+	aDrawer->registerImage(GHOST_DEAD);
+	aDrawer->registerImage(GHOST_VULNERABLE);
 }
 
 void Ghost::Die(World* aWorld)
@@ -87,12 +97,12 @@ void Ghost::SetImage(const char* anImage)
 	myImage = anImage;
 }
 
-void Ghost::Draw(Drawer* aDrawer)
+void Ghost::Draw() const
 {
 	if (myIsDeadFlag)
-		aDrawer->Draw("Ghost_Dead_32.png", static_cast<int>(myPosition.myX) + 220, static_cast<int>(myPosition.myY) + 60);
+		myDrawer->Draw(GHOST_DEAD, static_cast<int>(myPosition.myX) + 220, static_cast<int>(myPosition.myY) + 60);
 	else if (myIsClaimableFlag)
-		aDrawer->Draw("Ghost_Vulnerable_32.png", static_cast<int>(myPosition.myX) + 220, static_cast<int>(myPosition.myY) + 60);
+		myDrawer->Draw(GHOST_VULNERABLE, static_cast<int>(myPosition.myX) + 220, static_cast<int>(myPosition.myY) + 60);
 	else
-		aDrawer->Draw(myImage, static_cast<int>(myPosition.myX) + 220, static_cast<int>(myPosition.myY) + 60);
+		myDrawer->Draw(myImage, static_cast<int>(myPosition.myX) + 220, static_cast<int>(myPosition.myY) + 60);
 }

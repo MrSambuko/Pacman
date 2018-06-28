@@ -56,9 +56,9 @@ Pacman::Pacman(Drawer* aDrawer)
 , myFps(0)
 , myNextMovement(NO_MOVEMENT)
 {
-	myAvatar = new Avatar(START_PLAYER_POS);
-	myGhost = new Ghost(START_GHOST_POS);
-	myWorld = new World();
+	myAvatar = new Avatar(START_PLAYER_POS, aDrawer);
+	myGhost = new Ghost(START_GHOST_POS, aDrawer);
+	myWorld = new World(myDrawer);
 }
 
 
@@ -175,9 +175,11 @@ bool Pacman::CheckEndGameCondition() const
 
 void Pacman::Draw() const
 {
-	myWorld->Draw(myDrawer);
-	myAvatar->Draw(myDrawer);
-	myGhost->Draw(myDrawer);
+	myWorld->Draw();
+	myAvatar->Draw();
+	myGhost->Draw();
+
+	myDrawer->DrawSurfaces();
 
 	std::stringstream scoreStream;
 	scoreStream << myScore;
