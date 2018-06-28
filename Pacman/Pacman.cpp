@@ -1,6 +1,7 @@
 #include "Pacman.h"
 #include "Drawer.h"
 #include "SDL.h"
+#include "SDL_events.h"
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -8,6 +9,31 @@
 #include "Avatar.h"
 #include "World.h"
 #include "Ghost.h"
+
+#include <unordered_map>
+
+namespace {
+std::unordered_map<SDL_Keycode, int> KEY_TO_DIRECTION =
+{
+{ SDL_SCANCODE_W, UP },
+{ SDL_SCANCODE_UP, UP },
+{ SDL_SCANCODE_D, RIGHT },
+{ SDL_SCANCODE_RIGHT, RIGHT },
+{ SDL_SCANCODE_S, DOWN },
+{ SDL_SCANCODE_DOWN, DOWN },
+{ SDL_SCANCODE_A, LEFT },
+{ SDL_SCANCODE_LEFT, LEFT },
+};
+
+std::unordered_map<int, Vector2f> DIRECTION_TO_MOVE =
+{
+{ NO_MOVE, NO_MOVEMENT },
+{ UP,	 UP_MOVEMENT},
+{ RIGHT, RIGHT_MOVEMENT},
+{ DOWN,	 DOWN_MOVEMENT },
+{ LEFT,	 LEFT_MOVEMENT }
+};
+}
 
 Pacman* Pacman::Create(Drawer* aDrawer)
 {
@@ -28,10 +54,10 @@ Pacman::Pacman(Drawer* aDrawer)
 , myLives(3)
 , myScore(0)
 , myFps(0)
-, myNextMovement(-1.f,0.f)
+, myNextMovement(NO_MOVEMENT)
 {
-	myAvatar = new Avatar({13*22, 22*22});
-	myGhost = new Ghost({13*22, 13*22});
+	myAvatar = new Avatar(START_PLAYER_POS);
+	myGhost = new Ghost(START_GHOST_POS);
 	myWorld = new World();
 }
 
@@ -43,9 +69,9 @@ bool Pacman::Init() const
 	return true;
 }
 
-bool Pacman::Update(float aTime)
+bool Pacman::Update(const SDL_Event* event, float aTime)
 {
-	if (!UpdateInput())
+	if (!updateInput(event))
 		return false;
 
 	if (CheckEndGameCondition())
@@ -104,18 +130,26 @@ bool Pacman::Update(float aTime)
 	return true;
 }
 
-bool Pacman::UpdateInput()
+bool Pacman::updateInput(const SDL_Event* event)
 {
 	const Uint8 *keystate = SDL_GetKeyboardState(nullptr);
 
-	if (keystate[SDL_SCANCODE_UP])
-		myNextMovement = Vector2f(0.f, -1.f);
-	else if (keystate[SDL_SCANCODE_DOWN])
-		myNextMovement = Vector2f(0.f, 1.f);
-	else if (keystate[SDL_SCANCODE_RIGHT])
-		myNextMovement = Vector2f(1.f, 0.f);
-	else if (keystate[SDL_SCANCODE_LEFT])
-		myNextMovement = Vector2f(-1.f, 0.f);
+	if (event->type == SDL_KEYDOWN || event->type == SDL_KEYUP)
+	{
+		const auto& it = KEY_TO_DIRECTION.find(event->key.keysym.sym);
+
+		const auto& direction = it == KEY_TO_DIRECTION.end() ? NO_MOVE : it->second;
+		const auto& directionToMove = DIRECTION_TO_MOVE[direction];;
+		if (event->type == SDL_KEYDOWN)
+		{	
+			myNextMovement += directionToMove;
+		}
+		else if (event->type == SDL_KEYUP)
+		{
+			myNextMovement -= directionToMove;
+		}
+	}
+
 
 	return !keystate[SDL_SCANCODE_ESCAPE];
 }

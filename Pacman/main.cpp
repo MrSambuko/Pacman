@@ -41,7 +41,7 @@ int main(int argc, char **argv)
 		const float currentFrame = static_cast<float>(SDL_GetTicks()) * 0.001f;
 		const float elapsedTime = currentFrame - lastFrame;
 
-		if (!pacman->Update(elapsedTime))
+		if (!pacman->Update(&event, elapsedTime))
 			break;
 
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);

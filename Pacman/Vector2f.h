@@ -6,17 +6,13 @@
 class Vector2f
 {
 public:
-	Vector2f()
-	{
-		myX = 0.f;
-		myY = 0.f;
-	}
+	constexpr Vector2f()
+		: myX(.0f)
+		, myY(.0f) {}
 
-	Vector2f(float anX, float anY)
-	{
-		myX = anX;
-		myY = anY;
-	}
+	constexpr Vector2f(float anX, float anY) 
+		: myX(anX)
+		, myY(anY){}
 
 	Vector2f operator-(const Vector2f& other) const 
 	{
@@ -38,6 +34,14 @@ public:
 	{
 		myX = myX + other.myX;
 		myY = myY + other.myY;
+
+		return *this;
+	}
+
+	Vector2f& operator-=(const Vector2f& other) 
+	{
+		myX = myX - other.myX;
+		myY = myY - other.myY;
 
 		return *this;
 	}
