@@ -24,11 +24,11 @@ Pacman* Pacman::Create(Drawer* aDrawer)
 
 Pacman::Pacman(Drawer* aDrawer)
 : myDrawer(aDrawer)
-, myNextMovement(-1.f,0.f)
+, myGhostGhostCounter(0.f)
+, myLives(3)
 , myScore(0)
 , myFps(0)
-, myLives(3)
-, myGhostGhostCounter(0.f)
+, myNextMovement(-1.f,0.f)
 {
 	myAvatar = new Avatar(Vector2f(13*22,22*22));
 	myGhost = new Ghost(Vector2f(13*22,13*22));
