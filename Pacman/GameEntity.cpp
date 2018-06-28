@@ -2,9 +2,9 @@
 #include "Drawer.h"
 
 GameEntity::GameEntity(const Vector2f& aPosition, const char* anImage)
-:myPosition(aPosition)
+:myIdMarkedForDeleteFlag(false)
+,myPosition(aPosition)
 ,myImage(anImage)
-,myIdMarkedForDeleteFlag(false)
 {
 }
 
@@ -15,5 +15,5 @@ bool GameEntity::Intersect(GameEntity* aGameEntity)
 
 void GameEntity::Draw(Drawer* aDrawer)
 {
-	aDrawer->Draw(myImage, (int)myPosition.myX + 220, (int)myPosition.myY + 60);
+	aDrawer->Draw(myImage, static_cast<int>(myPosition.myX) + 220, static_cast<int>(myPosition.myY) + 60);
 }
