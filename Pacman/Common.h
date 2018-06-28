@@ -22,3 +22,6 @@ constexpr const Vector2f START_GHOST_POS(13.f * TILE_SIZE, 13.f * TILE_SIZE);
 
 constexpr int X_OFFSET = 220;
 constexpr int Y_OFFSET = 60;
+
+constexpr const float GHOST_SPEED = 30.f;
+constexpr const float DEAD_GHOST_SPEED = 120.f;

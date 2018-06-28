@@ -3,6 +3,7 @@
 #include "PathmapTile.h"
 #include "Drawer.h"
 
+
 namespace
 {
 	const char GHOST[] = "ghost_32.png";
@@ -31,12 +32,23 @@ void Ghost::Die(World* aWorld)
 
 void Ghost::Update(float aTime, World* aWorld)
 {
-	float speed = 30.f;
+	const float& speed = myIsDeadFlag ? DEAD_GHOST_SPEED : GHOST_SPEED;
 	const int nextTileX = GetCurrentTileX() + myDesiredMovementX;
 	const int nextTileY = GetCurrentTileY() + myDesiredMovementY;
 
-	if (myIsDeadFlag)
-		speed = 120.f;
+	static auto goingLeft = [&] () { return myDesiredMovementX == -1 && myDesiredMovementY ==  0; };
+	static auto goingUp   = [&] () { return myDesiredMovementX ==  0 && myDesiredMovementY == -1; };
+	static auto goingRight= [&] () { return myDesiredMovementX ==  1 && myDesiredMovementY ==  0; };
+	static auto goingDown = [&] () { return myDesiredMovementX ==  0 && myDesiredMovementY ==  1; };
+	static auto goLeft = [&] () { myDesiredMovementX = -1; myDesiredMovementY =  0; };
+	static auto goUp   = [&] () { myDesiredMovementX =  0; myDesiredMovementY = -1; };
+	static auto goRight= [&] () { myDesiredMovementX =  1; myDesiredMovementY =  0; };
+	static auto goDown = [&] () { myDesiredMovementX =  0; myDesiredMovementY =  1; };
+	static auto canGoLeft = [&] () { return aWorld->TileIsValid(myCurrentTileX-1, myCurrentTileY+0); };
+	static auto canGoUp   = [&] () { return aWorld->TileIsValid(myCurrentTileX+0, myCurrentTileY-1); };
+	static auto canGoRight= [&] () { return aWorld->TileIsValid(myCurrentTileX+1, myCurrentTileY+0); };
+	static auto canGoDown = [&] () { return aWorld->TileIsValid(myCurrentTileX+0, myCurrentTileY+1); };
+
 
 	if (IsAtDestination())
 	{
@@ -52,23 +64,43 @@ void Ghost::Update(float aTime, World* aWorld)
 		}
 		else
 		{
-			if (myDesiredMovementX == 1)
+			if (goingLeft())
 			{
-				myDesiredMovementX = 0;
-				myDesiredMovementY = 1;
-			} else if (myDesiredMovementY == 1)
-			{
-				myDesiredMovementX = -1;
-				myDesiredMovementY = 0;			
-			} else if (myDesiredMovementX == -1)
-			{
-				myDesiredMovementX = 0;
-				myDesiredMovementY = -1;
-			} else
-			{
-				myDesiredMovementX = 1;
-				myDesiredMovementY = 0;
+				if (canGoUp())
+					goUp();
+				else if (canGoDown())
+					goDown();
+				else
+					goRight();
 			}
+			else if (goingUp())
+			{
+				if (canGoRight())
+					goRight();
+				else if (canGoLeft())
+					goLeft();
+				else
+					goDown();
+			}
+			else if (goingRight())
+			{
+				if (canGoDown())
+					goDown();
+				else if (canGoUp())
+					goUp();
+				else
+					goLeft();
+			}
+			else // going down
+			{
+				if (canGoLeft())
+					goLeft();
+				else if (canGoRight())
+					goRight();
+				else
+					goUp();
+			}
+			
 
 			myIsDeadFlag = false;
 		}
