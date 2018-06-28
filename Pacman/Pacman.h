@@ -15,7 +15,7 @@ public:
 	static Pacman* Create(Drawer* aDrawer);
 
 	bool Update(float aTime);
-	bool Draw() const;
+	void Draw() const;
 
 private:
 	Pacman(Drawer* aDrawer);

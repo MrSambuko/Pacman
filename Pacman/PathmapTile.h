@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 
 class PathmapTile
 {
@@ -9,5 +10,6 @@ public:
 	int myY;
 	bool myIsBlockingFlag;
 	bool myIsVisitedFlag;
-
 };
+
+using PathmapTilePtr = std::shared_ptr<PathmapTile>;

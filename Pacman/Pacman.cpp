@@ -30,8 +30,8 @@ Pacman::Pacman(Drawer* aDrawer)
 , myFps(0)
 , myNextMovement(-1.f,0.f)
 {
-	myAvatar = new Avatar(Vector2f(13*22,22*22));
-	myGhost = new Ghost(Vector2f(13*22,13*22));
+	myAvatar = new Avatar({13*22, 22*22});
+	myGhost = new Ghost({13*22, 13*22});
 	myWorld = new World();
 }
 
@@ -53,7 +53,8 @@ bool Pacman::Update(float aTime)
 		myDrawer->DrawText("You win!", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 70);
 		return true;
 	}
-	else if (myLives <= 0)
+	
+	if (myLives <= 0)
 	{
 		myDrawer->DrawText("You lose!", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 70);	
 		return true;
@@ -86,8 +87,8 @@ bool Pacman::Update(float aTime)
 		{
 			myLives--;
 
-			myAvatar->SetPosition(Vector2f(13*22,22*22));
-			myGhost->SetPosition(Vector2f(13*22,13*22));
+			myAvatar->SetPosition({13*22, 22*22});
+			myGhost->SetPosition({13*22, 13*22});
 		}
 		else if (myGhost->myIsClaimableFlag && !myGhost->myIsDeadFlag)
 		{
@@ -138,7 +139,7 @@ bool Pacman::CheckEndGameCondition() const
 	return false;
 }
 
-bool Pacman::Draw() const
+void Pacman::Draw() const
 {
 	myWorld->Draw(myDrawer);
 	myAvatar->Draw(myDrawer);
@@ -164,6 +165,4 @@ bool Pacman::Draw() const
 	fpsStream << myFps;
 	std::string fpsString(fpsStream.str());
 	myDrawer->DrawText(fpsString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 930, 50);
-
-	return true;
 }

@@ -32,7 +32,7 @@ void Ghost::Update(float aTime, World* aWorld)
 	{
 		if (!myPath.empty())
 		{
-			PathmapTile* nextTile = myPath.front();
+			const PathmapTilePtr nextTile = myPath.front();
 			myPath.pop_front();
 			SetNextTile(nextTile->myX, nextTile->myY);
 		}

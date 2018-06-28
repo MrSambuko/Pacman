@@ -3,12 +3,12 @@
 
 #include <list>
 #include "Vector2f.h"
+#include "Dot.h"
+#include "BigDot.h"
+#include "Cherry.h"
+#include "PathmapTile.h"
 
 class Drawer;
-class PathmapTile;
-class Dot;
-class BigDot;
-class Cherry;
 
 class World
 {
@@ -24,22 +24,22 @@ public:
 
 	void Update();
 
-	void GetPath(int aFromX, int aFromY, int aToX, int aToY, std::list<PathmapTile*>& aList);
+	void GetPath(int aFromX, int aFromY, int aToX, int aToY, std::list<PathmapTilePtr>& aList);
 
 private:
 
-	PathmapTile* GetTile(int aFromX, int aFromY);
-	bool Pathfind(PathmapTile* aFromTile, PathmapTile* aToTile, std::list<PathmapTile*>& aList);
-	bool ListDoesNotContain(PathmapTile* aFromTile, std::list<PathmapTile*>& aList);
+	PathmapTilePtr GetTile(int aFromX, int aFromY);
+	bool Pathfind(PathmapTilePtr aFromTile, PathmapTilePtr aToTile, std::list<PathmapTilePtr>& aList);
+	bool ListDoesNotContain(PathmapTilePtr aFromTile, std::list<PathmapTilePtr>& aList);
 
 
 	bool InitPathmap();
 	bool InitDots();
 	bool InitBigDots();
 
-	std::list<PathmapTile*> myPathmapTiles;
-	std::list<Dot*> myDots;
-	std::list<BigDot*> myBigDots;
-	std::list<Cherry*> myCherry;
+	std::list<PathmapTilePtr> myPathmapTiles;
+	std::list<DotPtr> myDots;
+	std::list<BigDotPtr> myBigDots;
+	std::list<CherryPtr> myCherry; //?? unused
 
 };

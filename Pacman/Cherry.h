@@ -1,14 +1,12 @@
-#ifndef CHERRY_H
-#define CHERRY_H
+#pragma once
 
 #include "StaticGameEntity.h"
 #include "Vector2f.h"
+#include <memory>
 
 class Cherry : public StaticGameEntity
 {
 public:
 	Cherry(Vector2f aPosition);
-	~Cherry(void);
 };
-
-#endif // CHERRY_H
+using CherryPtr = std::shared_ptr<Cherry>;

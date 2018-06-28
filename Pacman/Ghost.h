@@ -2,9 +2,9 @@
 
 #include <list>
 #include "MovableGameEntity.h"
+#include "PathmapTile.h"
 
 class World;
-class PathmapTile;
 
 class Ghost : public MovableGameEntity
 {
@@ -27,6 +27,6 @@ protected:
 	int myDesiredMovementX;
 	int myDesiredMovementY;
 
-	std::list<PathmapTile*> myPath;
+	std::list<PathmapTilePtr> myPath;
 
 };

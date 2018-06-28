@@ -65,7 +65,7 @@ void Drawer::DrawText(const char* aText, const char* aFontFile, int aX, int aY) 
 	sizeRect.x = 0;
 	sizeRect.y = 0;
 	sizeRect.w = surface->w;
-	sizeRect.h = surface->h;
+	sizeRect.h = surface->h ;
 
 	SDL_Rect posRect ;
 	posRect.x = aX;
