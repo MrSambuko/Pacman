@@ -1,5 +1,5 @@
-#ifndef GAMEENTITY_H
-#define GAMEENTITY_H
+#pragma once
+
 
 #include "Vector2f.h"
 
@@ -9,7 +9,7 @@ class GameEntity
 {
 public:
 	GameEntity(const Vector2f& aPosition, const char* anImage);
-	~GameEntity(void);
+	virtual ~GameEntity() = default;
 
 	Vector2f GetPosition() const { return myPosition; }
 	void SetPosition(const Vector2f& aPosition){ myPosition = aPosition; }
@@ -26,5 +26,3 @@ protected:
 	Vector2f myPosition;
 	const char* myImage;
 };
-
-#endif // GAMEENTITY_H

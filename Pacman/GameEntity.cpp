@@ -8,13 +8,8 @@ GameEntity::GameEntity(const Vector2f& aPosition, const char* anImage)
 {
 }
 
-GameEntity::~GameEntity(void)
-{
-}
-
 bool GameEntity::Intersect(GameEntity* aGameEntity)
 {
-
 	return false;	
 }
 
