@@ -25,6 +25,8 @@ private:
 	void MoveAvatar() const;
 	bool CheckEndGameCondition() const;
 
+	void Reset() const;
+
 	Drawer* myDrawer;
 
 	float myGhostGhostCounter;

@@ -114,8 +114,7 @@ bool Pacman::Update(const SDL_Event* event, float aTime)
 		{
 			myLives--;
 
-			myAvatar->SetPosition({13*22, 22*22});
-			myGhost->SetPosition({13*22, 13*22});
+			Reset();
 		}
 		else if (myGhost->myIsClaimableFlag && !myGhost->myIsDeadFlag)
 		{
@@ -177,7 +176,13 @@ void Pacman::MoveAvatar() const
 
 bool Pacman::CheckEndGameCondition() const
 {
-	return false;
+	return myWorld->DotsLeft() == 0;
+}
+
+void Pacman::Reset() const
+{
+	myAvatar->Reset(START_PLAYER_POS);
+	myGhost->Reset(START_GHOST_POS);
 }
 
 void Pacman::Draw() const

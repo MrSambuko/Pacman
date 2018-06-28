@@ -14,6 +14,8 @@ public:
 
 	bool IsAtDestination() const;
 
+	virtual void Reset(const Vector2f& toPosition);
+
 protected:
 
 	int myCurrentTileX;

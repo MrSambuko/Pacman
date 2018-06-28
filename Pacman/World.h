@@ -25,14 +25,14 @@ public:
 	bool HasIntersectedBigDot(const Vector2f& aPosition);
 	bool HasIntersectedCherry(const Vector2f& aPosition);
 
-	void Update();
-
-	void GetPath(int aFromX, int aFromY, int aToX, int aToY, std::list<PathmapTilePtr>& aList);
+	size_t DotsLeft() const { return myDots.size() + myBigDots.size(); }
+	
+	void GetPath(int aFromX, int aFromY, int aToX, int aToY, std::unordered_set<PathmapTilePtr>& aList);
 
 private:
 
 	PathmapTilePtr GetTile(int aFromX, int aFromY);
-	bool Pathfind(PathmapTilePtr aFromTile, PathmapTilePtr aToTile, std::list<PathmapTilePtr>& aList);
+	bool Pathfind(PathmapTilePtr aFromTile, PathmapTilePtr aToTile, std::unordered_set<PathmapTilePtr>& aList);
 	bool ListDoesNotContain(PathmapTilePtr& aFromTile, std::list<PathmapTilePtr>& aList);
 
 

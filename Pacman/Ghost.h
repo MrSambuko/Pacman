@@ -3,6 +3,7 @@
 #include <list>
 #include "MovableGameEntity.h"
 #include "PathmapTile.h"
+#include <unordered_set>
 
 class World;
 
@@ -21,11 +22,13 @@ public:
 	void Die(World* aWorld);
 
 	void Draw() const override;
+
+	void Reset( const Vector2f& toPosition ) override;
 protected:
 
 	int myDesiredMovementX;
 	int myDesiredMovementY;
 
-	std::list<PathmapTilePtr> myPath;
+	std::unordered_set<PathmapTilePtr> myPath;
 
 };

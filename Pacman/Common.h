@@ -2,7 +2,7 @@
 
 #include "Vector2f.h"
 
-constexpr const int MAX_TILE_NUM = 100;
+constexpr const int MAX_TILE_NUM = 30;
 constexpr const int TILE_SIZE = 22;
 
 constexpr const int NO_MOVE = 0;
@@ -17,11 +17,16 @@ constexpr const Vector2f RIGHT_MOVEMENT(1.0f, 0.0f);
 constexpr const Vector2f DOWN_MOVEMENT(0.0f, 1.0f);
 constexpr const Vector2f LEFT_MOVEMENT(-1.0f, 0.0f);
 
-constexpr const Vector2f START_PLAYER_POS(12.f * TILE_SIZE, 22.f * TILE_SIZE);
-constexpr const Vector2f START_GHOST_POS(13.f * TILE_SIZE, 13.f * TILE_SIZE);
+constexpr const int START_PLAYER_TILE_X = 12;
+constexpr const int START_PLAYER_TILE_Y = 22;
+constexpr const int START_GHOST_TILE_X = 13;
+constexpr const int START_GHOST_TILE_Y = 13;
+constexpr const Vector2f START_PLAYER_POS(static_cast<float>(START_PLAYER_TILE_X*TILE_SIZE), static_cast<float>(START_PLAYER_TILE_Y*TILE_SIZE));
+constexpr const Vector2f START_GHOST_POS(static_cast<float>(START_GHOST_TILE_X*TILE_SIZE), static_cast<float>(START_GHOST_TILE_Y*TILE_SIZE));
 
 constexpr int X_OFFSET = 220;
 constexpr int Y_OFFSET = 60;
 
-constexpr const float GHOST_SPEED = 30.f;
+constexpr const float GHOST_SPEED = 60.f;
 constexpr const float DEAD_GHOST_SPEED = 120.f;
+constexpr const float PLAYER_SPEED = 90.f;

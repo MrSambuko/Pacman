@@ -9,6 +9,7 @@
 #include "Common.h"
 #include <set>
 #include <algorithm>
+#include <queue>
 
 namespace
 {
@@ -153,7 +154,7 @@ bool World::HasIntersectedCherry(const Vector2f& aPosition)
 	return true;
 }
 
-void World::GetPath(int aFromX, int aFromY, int aToX, int aToY, std::list<PathmapTilePtr>& aList)
+void World::GetPath(int aFromX, int aFromY, int aToX, int aToY, std::unordered_set<PathmapTilePtr>& aList)
 {
 	const auto fromTile = GetTile(aFromX, aFromY);
 	const auto toTile = GetTile(aToX, aToY);
@@ -204,43 +205,63 @@ bool SortFromGhostSpawn(const PathmapTilePtr& a, const PathmapTilePtr& b)
     return la < lb;
 }
 
-bool World::Pathfind(PathmapTilePtr aFromTile, PathmapTilePtr aToTile, std::list<PathmapTilePtr>& aList)
+bool World::Pathfind(PathmapTilePtr aFromTile, PathmapTilePtr aToTile, std::unordered_set<PathmapTilePtr>& aList)
 {
-	aFromTile->myIsVisitedFlag = true;
+	std::vector<PathmapTilePtr> path;
+	std::queue<PathmapTilePtr> queue;
 
-	if (aFromTile->myIsBlockingFlag)
-		return false;
+	std::unordered_map<PathmapTilePtr, std::unordered_set<PathmapTilePtr>, PathmapTile::Hash, PathmapTile::Compare> graph;
 
-	if (aFromTile == aToTile)
-		return true;
-
-	std::set<PathmapTilePtr, bool(*)(const PathmapTilePtr&, const PathmapTilePtr&)> neighborList(&SortFromGhostSpawn);
-
-	auto&& up = GetTile(aFromTile->myX, aFromTile->myY - 1);
-	if (up && !up->myIsVisitedFlag && !up->myIsBlockingFlag && ListDoesNotContain(up, aList))
-		neighborList.emplace(up);
-
-	auto&& down = GetTile(aFromTile->myX, aFromTile->myY + 1);
-	if (down && !down->myIsVisitedFlag && !down->myIsBlockingFlag && ListDoesNotContain(down, aList))
-		neighborList.emplace(down);
-
-	auto&& right = GetTile(aFromTile->myX + 1, aFromTile->myY);
-	if (right && !right->myIsVisitedFlag && !right->myIsBlockingFlag && ListDoesNotContain(right, aList))
-		neighborList.emplace(right);
-
-	auto&& left = GetTile(aFromTile->myX - 1, aFromTile->myY);
-	if (left && !left->myIsVisitedFlag && !left->myIsBlockingFlag && ListDoesNotContain(left, aList))
-		neighborList.emplace(left);
-
-	for (auto&& tile : neighborList)
+	for (const auto& tile : myPathmapTiles)
 	{
-		aList.emplace_back(tile);
+		if (!tile->myIsBlockingFlag || tile == aFromTile || tile == aToTile)
+		{
+			graph[tile] = std::unordered_set<PathmapTilePtr>();
 
-		if (Pathfind(tile, aToTile, aList))
-			return true;
+			auto&& left = GetTile(tile->myX-1, tile->myY);
+			if (left != nullptr && !left->myIsBlockingFlag)
+				graph[tile].emplace(std::move(left));
 
-		aList.pop_back();
+			auto&& up = GetTile(tile->myX, tile->myY-1);
+			if (up != nullptr && !up->myIsBlockingFlag)
+				graph[tile].emplace(std::move(up));
+			
+			auto&& right = GetTile(tile->myX+1, tile->myY);
+			if (right != nullptr && !right->myIsBlockingFlag)
+				graph[tile].emplace(std::move(right));
+
+			auto&& down = GetTile(tile->myX, tile->myY+1);
+			if (down != nullptr && !down->myIsBlockingFlag)
+				graph[tile].emplace(std::move(down));
+		}
 	}
+
+	const auto& start = graph.find(aFromTile);
+	const auto& end = graph.find(aToTile);
+
+	queue.push(aFromTile);
+	std::unordered_set<PathmapTilePtr> visited;
+	visited.insert(aFromTile);
+
+	while (!queue.empty())
+	{
+		const auto current = queue.front();
+		queue.pop();
+
+		if (current==aToTile)
+			break;
+
+		const auto& nextTiles = graph[current];
+		for (const auto& next : nextTiles)
+		{
+			if (visited.find(next) == visited.end())
+			{
+				queue.push(next);
+				visited.insert(current);
+			}
+		}
+	}
+
 
 	return false;
 }

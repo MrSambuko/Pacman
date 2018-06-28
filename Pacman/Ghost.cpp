@@ -27,7 +27,7 @@ Ghost::Ghost(const Vector2f& aPosition, Drawer* aDrawer)
 void Ghost::Die(World* aWorld)
 {
 	myPath.clear();
-	aWorld->GetPath(myCurrentTileX, myCurrentTileY, 13, 13, myPath);
+	aWorld->GetPath(myCurrentTileX, myCurrentTileY, START_GHOST_TILE_X, START_GHOST_TILE_Y, myPath);
 }
 
 void Ghost::Update(float aTime, World* aWorld)
@@ -54,9 +54,10 @@ void Ghost::Update(float aTime, World* aWorld)
 	{
 		if (!myPath.empty())
 		{
+			/*
 			const PathmapTilePtr nextTile = myPath.front();
 			myPath.pop_front();
-			SetNextTile(nextTile->myX, nextTile->myY);
+			SetNextTile(nextTile->myX, nextTile->myY);*/
 		}
 		else if (aWorld->TileIsValid(nextTileX, nextTileY))
 		{
@@ -134,7 +135,15 @@ void Ghost::Draw() const
 	if (myIsDeadFlag)
 		myDrawer->Draw(GHOST_DEAD, static_cast<int>(myPosition.myX), static_cast<int>(myPosition.myY));
 	else if (myIsClaimableFlag)
-		myDrawer->Draw(GHOST_VULNERABLE, static_cast<int>(myPosition.myX) + 220, static_cast<int>(myPosition.myY));
+		myDrawer->Draw(GHOST_VULNERABLE, static_cast<int>(myPosition.myX), static_cast<int>(myPosition.myY));
 	else
 		myDrawer->Draw(myImage, static_cast<int>(myPosition.myX), static_cast<int>(myPosition.myY));
+}
+
+void Ghost::Reset( const Vector2f& toPosition )
+{
+	MovableGameEntity::Reset(toPosition);
+	myIsDeadFlag = false;
+	myDesiredMovementX = 0;
+	myDesiredMovementY = -1;
 }

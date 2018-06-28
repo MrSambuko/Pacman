@@ -13,6 +13,12 @@ bool MovableGameEntity::IsAtDestination() const
 	return myCurrentTileX == myNextTileX && myCurrentTileY == myNextTileY;
 }
 
+void MovableGameEntity::Reset( const Vector2f& toPosition )
+{
+	myCurrentTileX = myNextTileX = static_cast<int>(toPosition.myX / TILE_SIZE);
+	myCurrentTileY = myNextTileY = static_cast<int>(toPosition.myY / TILE_SIZE);
+}
+
 void MovableGameEntity::SetNextTile(int anX, int anY)
 {
 	myNextTileX = anX;
