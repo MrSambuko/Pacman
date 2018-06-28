@@ -15,14 +15,14 @@
 namespace {
 std::unordered_map<SDL_Keycode, int> KEY_TO_DIRECTION =
 {
-{ SDL_SCANCODE_W, UP },
-{ SDL_SCANCODE_UP, UP },
-{ SDL_SCANCODE_D, RIGHT },
-{ SDL_SCANCODE_RIGHT, RIGHT },
-{ SDL_SCANCODE_S, DOWN },
-{ SDL_SCANCODE_DOWN, DOWN },
-{ SDL_SCANCODE_A, LEFT },
-{ SDL_SCANCODE_LEFT, LEFT },
+{ SDLK_w, UP },
+{ SDLK_UP, UP },
+{ SDLK_d, RIGHT },
+{ SDLK_RIGHT, RIGHT },
+{ SDLK_s, DOWN },
+{ SDLK_DOWN, DOWN },
+{ SDLK_a, LEFT },
+{ SDLK_LEFT, LEFT },
 };
 
 std::unordered_map<int, Vector2f> DIRECTION_TO_MOVE =
@@ -55,6 +55,7 @@ Pacman::Pacman(Drawer* aDrawer)
 , myScore(0)
 , myFps(0)
 , myNextMovement(NO_MOVEMENT)
+, myDirection(NO_MOVE)
 {
 	myAvatar = new Avatar(START_PLAYER_POS, aDrawer);
 	myGhost = new Ghost(START_GHOST_POS, aDrawer);
@@ -133,21 +134,27 @@ bool Pacman::Update(const SDL_Event* event, float aTime)
 bool Pacman::updateInput(const SDL_Event* event)
 {
 	const Uint8 *keystate = SDL_GetKeyboardState(nullptr);
+	
+	myNextMovement = NO_MOVEMENT;
+	myDirection = NO_MOVE;
 
-	if (event->type == SDL_KEYDOWN || event->type == SDL_KEYUP)
+	if (event->type == SDL_KEYDOWN)
 	{
 		const auto& it = KEY_TO_DIRECTION.find(event->key.keysym.sym);
 
 		const auto& direction = it == KEY_TO_DIRECTION.end() ? NO_MOVE : it->second;
-		const auto& directionToMove = DIRECTION_TO_MOVE[direction];;
-		if (event->type == SDL_KEYDOWN)
-		{	
-			myNextMovement += directionToMove;
-		}
-		else if (event->type == SDL_KEYUP)
-		{
-			myNextMovement -= directionToMove;
-		}
+		
+		/*if (event->type == SDL_KEYDOWN)
+			myDirection |= direction;
+		else
+			*/myDirection ^= direction;
+		
+		for (const auto& directionVector : DIRECTION_TO_MOVE)
+			if (myDirection & directionVector.first)
+			{
+				myNextMovement += directionVector.second;
+				break;
+			}
 	}
 
 

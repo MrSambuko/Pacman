@@ -3,6 +3,7 @@
 #include "SDL.h"
 #include "SDL_image.h"
 #include "SDL_ttf.h"
+#include "Common.h"
 
 Drawer* Drawer::Create(SDL_Window* aWindow, SDL_Renderer* aRenderer)
 {
@@ -19,61 +20,55 @@ Drawer* Drawer::Create(SDL_Window* aWindow, SDL_Renderer* aRenderer)
 
 void Drawer::Draw( const std::string& anImage, int aCellX, int aCellY )
 {
-	myItemsToDraw.push_back({anImage, {aCellX, aCellY}});
+	if (myItemsToDraw.find(anImage) != myItemsToDraw.end())
+		myItemsToDraw[anImage].push_back({aCellX, aCellY});
+	else
+		myItemsToDraw[anImage] = {{aCellX, aCellY}};
 }
 
-void Drawer::registerImage( const std::string& anImage, int aCellX, int aCellY )
+void Drawer::registerImage( const std::string& anImage)
 {
-	auto it = mySurfaces.find(anImage);
+	if (myRenderItems.find(anImage) != myRenderItems.end())
+		return;
 
-	if (it == mySurfaces.end())
-	{
-		SDL_Surface* surface = IMG_Load( anImage.c_str() ) ;
+	SDL_Surface* surface = IMG_Load( anImage.c_str() ) ;
 
-		if (surface == nullptr)
-			return;
+	if (surface == nullptr)
+		return;
 
-		SDL_Texture* optimizedSurface = SDL_CreateTextureFromSurface(myRenderer, surface);
+	SDL_Texture* optimizedSurface = SDL_CreateTextureFromSurface(myRenderer, surface);
 		
-		mySurfaces.insert({anImage, {{aCellX, aCellY}, surface, optimizedSurface}});
-	}
-	else
-	{
-		mySurfaces.insert({anImage, {{aCellX, aCellY}, std::get<1>(it->second), std::get<2>(it->second)}});
-	}
+	myRenderItems[anImage] = {surface, optimizedSurface};
 }
 
 void Drawer::DrawSurfaces()
 {
 	SDL_Rect sizeRect;
-	SDL_Rect posRect ;
+	SDL_Rect posRect;
 
-	for (const auto& namePos : myItemsToDraw )
+	for (const auto& namePositions : myItemsToDraw)
 	{
-		assert(mySurfaces.find(namePos.first) != mySurfaces.end() && "Not registered");
-		auto surfaces = mySurfaces.equal_range(namePos.first);
-		const auto& xDiff = namePos.second.first;
-		const auto& yDiff = namePos.second.second;
+		const auto& surface = myRenderItems[namePositions.first].first;
+		const auto& texture = myRenderItems[namePositions.first].second;
 
-		for (auto& surfacesPair = surfaces.first; surfacesPair != surfaces.second; ++surfacesPair)
+		sizeRect.x = 0;
+		sizeRect.y = 0;
+		sizeRect.w = surface->w;
+		sizeRect.h = surface->h ;
+
+		posRect.w = sizeRect.w;
+		posRect.h = sizeRect.h;
+
+		for (const auto& posPair : namePositions.second)
 		{
-			sizeRect.x = 0;
-			sizeRect.y = 0;
-			const auto& surface = std::get<1>(surfacesPair->second);
-			sizeRect.w = surface->w;
-			sizeRect.h = surface->h ;
-
-			const auto& xy = std::get<0>(surfacesPair->second);
-			posRect.x = xy.first + xDiff;
-			posRect.y = xy.second + yDiff;
-			posRect.w = sizeRect.w;
-			posRect.h = sizeRect.h;
-			SDL_RenderCopy(myRenderer, std::get<2>(surfacesPair->second), &sizeRect, &posRect);
+			posRect.x = X_OFFSET + posPair.first;
+			posRect.y = Y_OFFSET + posPair.second;
+			
+			SDL_RenderCopy(myRenderer, texture, &sizeRect, &posRect);
 		}
 	}
 
 	myItemsToDraw.clear();
-	
 }
 
 Drawer::Drawer(SDL_Window* aWindow, SDL_Renderer* aRenderer)

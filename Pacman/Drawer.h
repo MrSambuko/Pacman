@@ -12,7 +12,7 @@ class Drawer
 public:
 	static Drawer* Create(SDL_Window* aWindow, SDL_Renderer* aRenderer);
 
-	void registerImage(const std::string& anImage, int aCellX = 0, int aCellY = 0);
+	void registerImage(const std::string& anImage);
 
 	void Draw(const std::string& anImage, int aCellX = 0, int aCellY = 0);
 	void DrawSurfaces();
@@ -25,6 +25,6 @@ private:
 	SDL_Window* myWindow;
 	SDL_Renderer* myRenderer;
 
-	std::unordered_multimap<std::string, std::tuple<std::pair<int, int>, SDL_Surface*, SDL_Texture*>> mySurfaces;
-	std::vector<std::pair<std::string, std::pair<int, int>>> myItemsToDraw;
+	std::unordered_map<std::string, std::pair<SDL_Surface*, SDL_Texture*>> myRenderItems;
+	std::unordered_map<std::string, std::vector<std::pair<int, int>>> myItemsToDraw;
 };

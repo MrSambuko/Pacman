@@ -100,9 +100,9 @@ void Ghost::SetImage(const char* anImage)
 void Ghost::Draw() const
 {
 	if (myIsDeadFlag)
-		myDrawer->Draw(GHOST_DEAD, static_cast<int>(myPosition.myX) + 220, static_cast<int>(myPosition.myY) + 60);
+		myDrawer->Draw(GHOST_DEAD, static_cast<int>(myPosition.myX), static_cast<int>(myPosition.myY));
 	else if (myIsClaimableFlag)
-		myDrawer->Draw(GHOST_VULNERABLE, static_cast<int>(myPosition.myX) + 220, static_cast<int>(myPosition.myY) + 60);
+		myDrawer->Draw(GHOST_VULNERABLE, static_cast<int>(myPosition.myX) + 220, static_cast<int>(myPosition.myY));
 	else
-		myDrawer->Draw(myImage, static_cast<int>(myPosition.myX) + 220, static_cast<int>(myPosition.myY) + 60);
+		myDrawer->Draw(myImage, static_cast<int>(myPosition.myX), static_cast<int>(myPosition.myY));
 }

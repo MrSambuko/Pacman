@@ -1,5 +1,6 @@
 #include "GameEntity.h"
 #include "Drawer.h"
+#include "Common.h"
 
 GameEntity::GameEntity(const Vector2f& aPosition, Drawer* aDrawer, std::string&& anImage)
 :myIdMarkedForDeleteFlag(false)
@@ -7,12 +8,12 @@ GameEntity::GameEntity(const Vector2f& aPosition, Drawer* aDrawer, std::string&&
 ,myImage(anImage)
 ,myDrawer(aDrawer)
 {
-	aDrawer->registerImage(anImage, static_cast<int>(aPosition.myX), static_cast<int>(aPosition.myY));
+	aDrawer->registerImage(anImage);
 }
 
 void GameEntity::Draw() const
 {
-	myDrawer->Draw(myImage);
+	myDrawer->Draw(myImage, static_cast<int>(myPosition.myX), static_cast<int>(myPosition.myY));
 }
 
 

@@ -105,7 +105,7 @@ bool World::InitBigDots()
 
 void World::Draw() const
 {
-	myDrawer->Draw(FIELD);
+	myDrawer->Draw(FIELD, -X_OFFSET, -Y_OFFSET);
 	for (const auto& dot : myDots)
 		dot->Draw();
 

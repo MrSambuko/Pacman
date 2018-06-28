@@ -34,6 +34,7 @@ private:
 	int myFps;
 
 	Vector2f myNextMovement;
+	int myDirection;
 
 	Avatar* myAvatar;
 	Ghost* myGhost;
