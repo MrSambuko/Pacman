@@ -27,11 +27,11 @@ std::unordered_map<SDL_Keycode, int> KEY_TO_DIRECTION =
 
 std::unordered_map<int, Vector2f> DIRECTION_TO_MOVE =
 {
-{ NO_MOVE, NO_MOVEMENT },
-{ UP,	 UP_MOVEMENT},
-{ RIGHT, RIGHT_MOVEMENT},
-{ DOWN,	 DOWN_MOVEMENT },
-{ LEFT,	 LEFT_MOVEMENT }
+{ NO_MOVE, NO_DIRECTION },
+{ UP,	 UP_DIRECTION},
+{ RIGHT, RIGHT_DIRECTION},
+{ DOWN,	 DOWN_DIRECTION },
+{ LEFT,	 LEFT_DIRECTION }
 };
 }
 
@@ -54,7 +54,7 @@ Pacman::Pacman(Drawer* aDrawer)
 , myLives(3)
 , myScore(0)
 , myFps(0)
-, myNextMovement(NO_MOVEMENT)
+, myNextMovement(NO_DIRECTION)
 , myDirection(NO_MOVE)
 {
 	myAvatar = new Avatar(START_PLAYER_POS, aDrawer);
@@ -134,7 +134,7 @@ bool Pacman::updateInput(const SDL_Event* event)
 {
 	const Uint8 *keystate = SDL_GetKeyboardState(nullptr);
 	
-	myNextMovement = NO_MOVEMENT;
+	myNextMovement = NO_DIRECTION;
 	myDirection = NO_MOVE;
 
 	if (event->type == SDL_KEYDOWN)
