@@ -62,6 +62,7 @@ public:
 		return *this;
 	}
 
+
 	Vector2f operator*(const float aValue) const 
 	{
 		return {myX * aValue, myY * aValue};

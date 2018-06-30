@@ -27,12 +27,12 @@ public:
 
 	size_t DotsLeft() const { return myDots.size() + myBigDots.size(); }
 	
-	void GetPath(int aFromX, int aFromY, int aToX, int aToY, std::unordered_set<PathmapTilePtr>& aList);
+	void GetPath(int aFromX, int aFromY, int aToX, int aToY, std::vector<PathmapTilePtr>& aList);
 
 private:
 
 	PathmapTilePtr GetTile(int aFromX, int aFromY);
-	bool Pathfind(PathmapTilePtr aFromTile, PathmapTilePtr aToTile, std::unordered_set<PathmapTilePtr>& aList);
+	bool Pathfind(PathmapTilePtr aFromTile, PathmapTilePtr aToTile, std::vector<PathmapTilePtr>& aList);
 	bool ListDoesNotContain(PathmapTilePtr& aFromTile, std::list<PathmapTilePtr>& aList);
 
 

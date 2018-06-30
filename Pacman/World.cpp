@@ -1,4 +1,5 @@
 #include "World.h"
+#include <algorithm>
 #include <fstream>
 #include <string>
 
@@ -13,7 +14,8 @@
 
 namespace
 {
-	const char FIELD[] = "playfield.png";
+	constexpr const char FIELD[] = "playfield.png";
+	constexpr const char MAP_FILENAME[] = "map.txt";
 }
 void World::Init()
 {
@@ -26,7 +28,7 @@ void World::Init()
 bool World::InitPathmap()
 {
 	std::string line;
-	std::ifstream myfile ("map.txt");
+	std::ifstream myfile (MAP_FILENAME);
 	if (myfile.is_open())
 	{
 		int lineIndex = 0;
@@ -50,7 +52,7 @@ bool World::InitPathmap()
 bool World::InitDots()
 {
 	std::string line;
-	std::ifstream myfile ("map.txt");
+	std::ifstream myfile (MAP_FILENAME);
 	if (myfile.is_open())
 	{
 		int lineIndex = 0;
@@ -78,7 +80,7 @@ bool World::InitDots()
 bool World::InitBigDots()
 {
 	std::string line;
-	std::ifstream myfile ("map.txt");
+	std::ifstream myfile (MAP_FILENAME);
 	if (myfile.is_open())
 	{
 		int lineIndex = 0;
@@ -154,7 +156,7 @@ bool World::HasIntersectedCherry(const Vector2f& aPosition)
 	return true;
 }
 
-void World::GetPath(int aFromX, int aFromY, int aToX, int aToY, std::unordered_set<PathmapTilePtr>& aList)
+void World::GetPath(int aFromX, int aFromY, int aToX, int aToY, std::vector<PathmapTilePtr>& aList)
 {
 	const auto fromTile = GetTile(aFromX, aFromY);
 	const auto toTile = GetTile(aToX, aToY);
@@ -205,9 +207,8 @@ bool SortFromGhostSpawn(const PathmapTilePtr& a, const PathmapTilePtr& b)
     return la < lb;
 }
 
-bool World::Pathfind(PathmapTilePtr aFromTile, PathmapTilePtr aToTile, std::unordered_set<PathmapTilePtr>& aList)
+bool World::Pathfind(PathmapTilePtr aFromTile, PathmapTilePtr aToTile, std::vector<PathmapTilePtr>& aList)
 {
-	std::vector<PathmapTilePtr> path;
 	std::queue<PathmapTilePtr> queue;
 
 	std::unordered_map<PathmapTilePtr, std::unordered_set<PathmapTilePtr>, PathmapTile::Hash, PathmapTile::Compare> graph;
@@ -240,8 +241,8 @@ bool World::Pathfind(PathmapTilePtr aFromTile, PathmapTilePtr aToTile, std::unor
 	const auto& end = graph.find(aToTile);
 
 	queue.push(aFromTile);
-	std::unordered_set<PathmapTilePtr> visited;
-	visited.insert(aFromTile);
+	std::unordered_map<PathmapTilePtr, PathmapTilePtr> visited;
+	visited[aFromTile] = nullptr;
 
 	while (!queue.empty())
 	{
@@ -257,11 +258,18 @@ bool World::Pathfind(PathmapTilePtr aFromTile, PathmapTilePtr aToTile, std::unor
 			if (visited.find(next) == visited.end())
 			{
 				queue.push(next);
-				visited.insert(current);
+				visited[next] = current;
 			}
 		}
 	}
-
-
+	
+	auto current = aToTile;
+	aList.push_back(aToTile);
+	while (current != aFromTile)
+	{
+		current = visited[current];
+		aList.push_back(current);
+	}
+	
 	return false;
 }

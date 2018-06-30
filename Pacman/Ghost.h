@@ -29,6 +29,6 @@ protected:
 	int myDesiredMovementX;
 	int myDesiredMovementY;
 
-	std::unordered_set<PathmapTilePtr> myPath;
+	std::vector<PathmapTilePtr> myPath;
 
 };

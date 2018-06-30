@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "Ghost.h"
 #include "World.h"
 #include "PathmapTile.h"
@@ -28,6 +30,8 @@ void Ghost::Die(World* aWorld)
 {
 	myPath.clear();
 	aWorld->GetPath(myCurrentTileX, myCurrentTileY, START_GHOST_TILE_X, START_GHOST_TILE_Y, myPath);
+	myNextTileX = myCurrentTileX;
+	myNextTileY = myCurrentTileY;
 }
 
 void Ghost::Update(float aTime, World* aWorld)
@@ -54,10 +58,10 @@ void Ghost::Update(float aTime, World* aWorld)
 	{
 		if (!myPath.empty())
 		{
-			/*
-			const PathmapTilePtr nextTile = myPath.front();
-			myPath.pop_front();
-			SetNextTile(nextTile->myX, nextTile->myY);*/
+			const auto& nextTile = myPath.back();
+			std::cout << "going next to " << nextTile->myX << " " << nextTile->myY << "\n";
+			myPath.pop_back();
+			SetNextTile(nextTile->myX, nextTile->myY);
 		}
 		else if (aWorld->TileIsValid(nextTileX, nextTileY))
 		{
