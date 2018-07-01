@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include <tuple>
-#include "Common.h"
+#include "Constants.h"
 
 class PathmapTile
 {
@@ -10,13 +10,11 @@ public:
 		: myX(anX)
 		, myY(anY)
 		, myIsBlockingFlag(aIsBlockingFlag)
-		, myIsVisitedFlag(false)
 	{}
 
 	int myX;
 	int myY;
 	bool myIsBlockingFlag;
-	bool myIsVisitedFlag;
 
 	struct Hash
 	{
@@ -33,8 +31,22 @@ public:
 		}
 	};
 };
-
 using PathmapTilePtr = std::shared_ptr<PathmapTile>;
+
+struct PathTilePairComparator
+{
+	size_t operator() (const std::pair<PathmapTilePtr, PathmapTilePtr>& p1, const std::pair<PathmapTilePtr, PathmapTilePtr>& p2) const
+	{
+		return p1.first == p2.first && p1.second == p2.second;
+	}
+};
+struct PathTilePairHash
+{
+	size_t operator() (const std::pair<PathmapTilePtr, PathmapTilePtr>& p) const
+	{
+		return std::hash<void*>()(p.first.get());
+	}
+};
 
 static PathmapTilePtr makePathTilePtr(int anX, int anY, bool aIsBlockingFlag)
 {

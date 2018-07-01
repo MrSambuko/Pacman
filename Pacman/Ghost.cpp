@@ -13,8 +13,11 @@ namespace
 	const char GHOST_VULNERABLE[] = "Ghost_Vulnerable_32.png";
 }
 
-Ghost::Ghost(const Vector2f& aPosition, Drawer* aDrawer)
-: MovableGameEntity(aPosition, aDrawer, GHOST)
+Ghost::Ghost(const Vector2f& aPosition, Drawer* aDrawer, World* aWorld, std::string&& anImage)
+: MovableGameEntity(aPosition, aDrawer, std::move(anImage))
+, myWorld(aWorld)
+, mySpeed(GHOST_SPEED)
+, myState(CHASE)
 {
 	myIsClaimableFlag = false;
 	myIsDeadFlag = false;
@@ -26,93 +29,45 @@ Ghost::Ghost(const Vector2f& aPosition, Drawer* aDrawer)
 	aDrawer->RegisterImage(GHOST_VULNERABLE);
 }
 
-void Ghost::Die(World* aWorld)
+void Ghost::ChangeState(GhostState aNewState)
 {
+	myState = aNewState;
 	myPath.clear();
-	aWorld->GetPath(myCurrentTileX, myCurrentTileY, START_GHOST_TILE_X, START_GHOST_TILE_Y, myPath);
-	myNextTileX = myCurrentTileX;
-	myNextTileY = myCurrentTileY;
 }
 
-void Ghost::Update(float aTime, World* aWorld)
+void Ghost::Update(float aTime, int anAvatarTileX, int anAvatarTileY)
 {
-	const float& speed = myIsDeadFlag ? DEAD_GHOST_SPEED : GHOST_SPEED;
-	const int nextTileX = GetCurrentTileX() + myDesiredMovementX;
-	const int nextTileY = GetCurrentTileY() + myDesiredMovementY;
-
-	static const auto goingLeft = [&] () { return myDesiredMovementX == -1 && myDesiredMovementY ==  0; };
-	static const auto goingUp   = [&] () { return myDesiredMovementX ==  0 && myDesiredMovementY == -1; };
-	static const auto goingRight= [&] () { return myDesiredMovementX ==  1 && myDesiredMovementY ==  0; };
-	static const auto goingDown = [&] () { return myDesiredMovementX ==  0 && myDesiredMovementY ==  1; };
-	static const auto goLeft = [&] () { myDesiredMovementX = -1; myDesiredMovementY =  0; };
-	static const auto goUp   = [&] () { myDesiredMovementX =  0; myDesiredMovementY = -1; };
-	static const auto goRight= [&] () { myDesiredMovementX =  1; myDesiredMovementY =  0; };
-	static const auto goDown = [&] () { myDesiredMovementX =  0; myDesiredMovementY =  1; };
-	static const auto canGoLeft = [&] () { return aWorld->TileIsValid(myCurrentTileX-1, myCurrentTileY+0); };
-	static const auto canGoUp   = [&] () { return aWorld->TileIsValid(myCurrentTileX+0, myCurrentTileY-1); };
-	static const auto canGoRight= [&] () { return aWorld->TileIsValid(myCurrentTileX+1, myCurrentTileY+0); };
-	static const auto canGoDown = [&] () { return aWorld->TileIsValid(myCurrentTileX+0, myCurrentTileY+1); };
+	int nextTileX = 0;
+	int nextTileY = 0;
+	
+	if (myPath.empty())
+		GetNextTile(&myNextTileX, &myNextTileY, anAvatarTileX, anAvatarTileY);
 
 	if (IsAtDestination())
 	{
 		if (!myPath.empty())
 		{
 			const auto& nextTile = myPath.back();
-			std::cout << "going next to " << nextTile->myX << " " << nextTile->myY << "\n";
 			myPath.pop_back();
 			SetNextTile(nextTile->myX, nextTile->myY);
 		}
-		else if (aWorld->TileIsValid(nextTileX, nextTileY))
+		else
 		{
 			SetNextTile(nextTileX, nextTileY);
 		}
-		else
-		{
-			if (goingLeft())
-			{
-				if (canGoUp())
-					goUp();
-				else if (canGoDown())
-					goDown();
-				else
-					goRight();
-			}
-			else if (goingUp())
-			{
-				if (canGoRight())
-					goRight();
-				else if (canGoLeft())
-					goLeft();
-				else
-					goDown();
-			}
-			else if (goingRight())
-			{
-				if (canGoDown())
-					goDown();
-				else if (canGoUp())
-					goUp();
-				else
-					goLeft();
-			}
-			else // going down
-			{
-				if (canGoLeft())
-					goLeft();
-				else if (canGoRight())
-					goRight();
-				else
-					goUp();
-			}
-		
-			myIsDeadFlag = false;
-		}
+	}
+
+	if (myState == FRIGHTENED)
+	{
+		const auto& tile = myWorld->getRandomNearbyTile(myNextTileX, myNextTileY, myCurrentTileX, myCurrentTileY);
+		myNextTileX = tile->myX;
+		myNextTileY = tile->myY;
 	}
 
 	const Vector2f destination(static_cast<float>(myNextTileX * TILE_SIZE), static_cast<float>(myNextTileY * TILE_SIZE));
 	Vector2f direction = destination - myPosition;
 
-	const float distanceToMove = aTime * speed;
+	const float distanceToMove = aTime * mySpeed;
 
 	if (distanceToMove > direction.Length())
 	{
@@ -127,10 +82,6 @@ void Ghost::Update(float aTime, World* aWorld)
 	}
 }
 
-void Ghost::SetImage(const char* anImage)
-{
-	myImage = anImage;
-}
 
 void Ghost::Draw() const
 {
@@ -148,4 +99,9 @@ void Ghost::Reset( const Vector2f& toPosition )
 	myIsDeadFlag = false;
 	myDesiredMovementX = 0;
 	myDesiredMovementY = -1;
+}
+
+void Ghost::GoHome()
+{
+	myWorld->GetPath(myCurrentTileX, myCurrentTileY, START_GHOST_TILE_X, START_GHOST_TILE_Y, &myPath);
 }

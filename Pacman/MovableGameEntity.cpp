@@ -1,4 +1,4 @@
-#include "Common.h"
+#include "Constants.h"
 #include "MovableGameEntity.h"
 
 MovableGameEntity::MovableGameEntity(const Vector2f& aPosition, Drawer* aDrawer, std::string&& aImage)

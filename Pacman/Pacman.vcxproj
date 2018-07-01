@@ -121,6 +121,7 @@
     <ClCompile Include="Avatar.cpp" />
     <ClCompile Include="BigDot.cpp" />
     <ClCompile Include="Cherry.cpp" />
+    <ClCompile Include="Common.cpp" />
     <ClCompile Include="Dot.cpp" />
     <ClCompile Include="Drawer.cpp" />
     <ClCompile Include="GameEntity.cpp" />
@@ -128,6 +129,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MovableGameEntity.cpp" />
     <ClCompile Include="Pacman.cpp" />
+    <ClCompile Include="RedGhost.cpp" />
     <ClCompile Include="StaticGameEntity.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
@@ -136,6 +138,7 @@
     <ClInclude Include="BigDot.h" />
     <ClInclude Include="Cherry.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="Dot.h" />
     <ClInclude Include="Drawer.h" />
     <ClInclude Include="GameEntity.h" />
@@ -143,6 +146,7 @@
     <ClInclude Include="MovableGameEntity.h" />
     <ClInclude Include="Pacman.h" />
     <ClInclude Include="PathmapTile.h" />
+    <ClInclude Include="RedGhost.h" />
     <ClInclude Include="StaticGameEntity.h" />
     <ClInclude Include="Vector2f.h" />
     <ClInclude Include="World.h" />

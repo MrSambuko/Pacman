@@ -1,6 +1,6 @@
 #include "GameEntity.h"
 #include "Drawer.h"
-#include "Common.h"
+#include "Constants.h"
 
 GameEntity::GameEntity(const Vector2f& aPosition, Drawer* aDrawer, std::string&& anImage)
 :myIdMarkedForDeleteFlag(false)

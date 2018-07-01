@@ -61,6 +61,10 @@
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="RedGhost.cpp">
+      <Filter>Game\Game entities\Movable</Filter>
+    </ClCompile>
+    <ClCompile Include="Common.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pacman.h">
@@ -101,6 +105,12 @@
     </ClInclude>
     <ClInclude Include="Vector2f.h">
       <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="RedGhost.h">
+      <Filter>Game\Game entities\Movable</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="Common.h">
       <Filter>Common</Filter>

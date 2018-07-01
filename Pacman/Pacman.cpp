@@ -8,7 +8,7 @@
 
 #include "Avatar.h"
 #include "World.h"
-#include "Ghost.h"
+#include "RedGhost.h"
 
 #include <unordered_map>
 
@@ -61,9 +61,9 @@ Pacman::Pacman(Drawer* aDrawer)
 , myNextMovement(NO_DIRECTION)
 , myDirection(NO_MOVE)
 {
-	myAvatar = new Avatar(START_PLAYER_POS, aDrawer);
-	myGhost = new Ghost(START_GHOST_POS, aDrawer);
 	myWorld = new World(myDrawer);
+	myAvatar = new Avatar(START_PLAYER_POS, aDrawer);
+	myGhost = new RedGhost(START_GHOST_POS, aDrawer, myWorld);	
 
 	myDrawer->RegisterTextLabel(SCORE_LABEL, 20, 50);
 	myDrawer->RegisterTextLabel(LIVES_LABEL, 20, 80);
@@ -97,7 +97,7 @@ bool Pacman::Update(const SDL_Event* event, float aTime)
 
 	MoveAvatar();
 	myAvatar->Update(aTime);
-	myGhost->Update(aTime, myWorld);
+	myGhost->Update(aTime, myAvatar->GetCurrentTileX(), myAvatar->GetCurrentTileY());
 
 	if (myWorld->HasIntersectedDot(myAvatar->GetPosition()))
 		myScore += 10;
@@ -128,7 +128,7 @@ bool Pacman::Update(const SDL_Event* event, float aTime)
 		{
 			myScore += 50;
 			myGhost->myIsDeadFlag = true;
-			myGhost->Die(myWorld);
+			myGhost->ChangeState(FRIGHTENED);
 		}
 	}
 	

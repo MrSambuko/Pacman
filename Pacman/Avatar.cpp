@@ -2,7 +2,7 @@
 
 #include "Avatar.h"
 #include "Drawer.h"
-#include "Common.h"
+#include "Constants.h"
 
 namespace
 {
