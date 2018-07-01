@@ -5,6 +5,11 @@
 #include "pacman.h"
 #include "drawer.h"
 
+namespace
+{
+constexpr const char FONT[] = "freefont-ttf\\sfd\\FreeMono.ttf";
+}
+
 int main(int argc, char **argv)
 {
 	/* initialize SDL */
@@ -31,7 +36,8 @@ int main(int argc, char **argv)
 		exit(-1);
 	}
 
-	Drawer* drawer = Drawer::Create(window, renderer);
+	auto font = TTF_OpenFont(FONT, 24);
+	Drawer* drawer = Drawer::Create(window, renderer, font);
 	Pacman* pacman = Pacman::Create(drawer);
 
 	float lastFrame = static_cast<float>(SDL_GetTicks()) * 0.001f;
@@ -58,6 +64,7 @@ int main(int argc, char **argv)
 	delete pacman;
 	delete drawer;
 
+	TTF_CloseFont(font);
 	TTF_Quit();
 	IMG_Quit();
 	SDL_Quit( );

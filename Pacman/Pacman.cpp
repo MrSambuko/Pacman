@@ -33,6 +33,10 @@ std::unordered_map<int, Vector2f> DIRECTION_TO_MOVE =
 { DOWN,	 DOWN_DIRECTION },
 { LEFT,	 LEFT_DIRECTION }
 };
+
+constexpr const char SCORE_LABEL[] = "Score: ";
+constexpr const char LIVES_LABEL[] = "Lives: ";
+constexpr const char FPS_LABEL[] = "FPS: ";
 }
 
 Pacman* Pacman::Create(Drawer* aDrawer)
@@ -60,6 +64,10 @@ Pacman::Pacman(Drawer* aDrawer)
 	myAvatar = new Avatar(START_PLAYER_POS, aDrawer);
 	myGhost = new Ghost(START_GHOST_POS, aDrawer);
 	myWorld = new World(myDrawer);
+
+	myDrawer->RegisterTextLabel(SCORE_LABEL, 20, 50);
+	myDrawer->RegisterTextLabel(LIVES_LABEL, 20, 80);
+	myDrawer->RegisterTextLabel(FPS_LABEL, 880, 50);
 }
 
 
@@ -77,14 +85,14 @@ bool Pacman::Update(const SDL_Event* event, float aTime)
 
 	if (CheckEndGameCondition())
 	{
-		myDrawer->DrawText("You win!", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 70);
+		myDrawer->DrawText("You win!", 20, 70);
 		return true;
 	}
 	
 	if (myLives <= 0)
 	{
-		myDrawer->DrawText("You lose!", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 70);	
-		return true;
+		myDrawer->DrawText("You lose!", 20, 70);	
+		return false;
 	}
 
 	MoveAvatar();
@@ -191,26 +199,14 @@ void Pacman::Draw() const
 	myAvatar->Draw();
 	myGhost->Draw();
 
-	myDrawer->DrawSurfaces();
-
-	std::stringstream scoreStream;
-	scoreStream << myScore;
-	std::string scoreString(scoreStream.str());
-	myDrawer->DrawText("Score", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 50);
-	myDrawer->DrawText(scoreString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 90, 50);
-
+	myDrawer->DrawLabel(SCORE_LABEL);
+	myDrawer->DrawText(std::to_string(myScore), 110, 50);
 	
-	std::stringstream liveStream;
-	liveStream << myLives;
-	std::string livesString(liveStream.str());
+	myDrawer->DrawLabel(LIVES_LABEL);
+	myDrawer->DrawText(std::to_string(myLives), 110, 80);
 
-	myDrawer->DrawText("Lives", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 80);
-	myDrawer->DrawText(livesString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 90, 80);
+	myDrawer->DrawLabel(FPS_LABEL);
+	myDrawer->DrawText(std::to_string(myFps), 950, 50);
 
-	myDrawer->DrawText("FPS", "freefont-ttf\\sfd\\FreeMono.ttf", 880, 50);
-
-	std::stringstream fpsStream;
-	fpsStream << myFps;
-	std::string fpsString(fpsStream.str());
-	myDrawer->DrawText(fpsString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 930, 50);
+	myDrawer->Draw();
 }

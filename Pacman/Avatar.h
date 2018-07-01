@@ -13,5 +13,5 @@ public:
 
 private:
 	Vector2f myDirection;
-	bool myIsOpened;
+	bool myIsClosed;
 };

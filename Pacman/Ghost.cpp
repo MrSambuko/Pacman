@@ -22,8 +22,8 @@ Ghost::Ghost(const Vector2f& aPosition, Drawer* aDrawer)
 	myDesiredMovementX = 0;
 	myDesiredMovementY = -1;
 
-	aDrawer->registerImage(GHOST_DEAD);
-	aDrawer->registerImage(GHOST_VULNERABLE);
+	aDrawer->RegisterImage(GHOST_DEAD);
+	aDrawer->RegisterImage(GHOST_VULNERABLE);
 }
 
 void Ghost::Die(World* aWorld)
@@ -40,19 +40,18 @@ void Ghost::Update(float aTime, World* aWorld)
 	const int nextTileX = GetCurrentTileX() + myDesiredMovementX;
 	const int nextTileY = GetCurrentTileY() + myDesiredMovementY;
 
-	static auto goingLeft = [&] () { return myDesiredMovementX == -1 && myDesiredMovementY ==  0; };
-	static auto goingUp   = [&] () { return myDesiredMovementX ==  0 && myDesiredMovementY == -1; };
-	static auto goingRight= [&] () { return myDesiredMovementX ==  1 && myDesiredMovementY ==  0; };
-	static auto goingDown = [&] () { return myDesiredMovementX ==  0 && myDesiredMovementY ==  1; };
-	static auto goLeft = [&] () { myDesiredMovementX = -1; myDesiredMovementY =  0; };
-	static auto goUp   = [&] () { myDesiredMovementX =  0; myDesiredMovementY = -1; };
-	static auto goRight= [&] () { myDesiredMovementX =  1; myDesiredMovementY =  0; };
-	static auto goDown = [&] () { myDesiredMovementX =  0; myDesiredMovementY =  1; };
-	static auto canGoLeft = [&] () { return aWorld->TileIsValid(myCurrentTileX-1, myCurrentTileY+0); };
-	static auto canGoUp   = [&] () { return aWorld->TileIsValid(myCurrentTileX+0, myCurrentTileY-1); };
-	static auto canGoRight= [&] () { return aWorld->TileIsValid(myCurrentTileX+1, myCurrentTileY+0); };
-	static auto canGoDown = [&] () { return aWorld->TileIsValid(myCurrentTileX+0, myCurrentTileY+1); };
-
+	static const auto goingLeft = [&] () { return myDesiredMovementX == -1 && myDesiredMovementY ==  0; };
+	static const auto goingUp   = [&] () { return myDesiredMovementX ==  0 && myDesiredMovementY == -1; };
+	static const auto goingRight= [&] () { return myDesiredMovementX ==  1 && myDesiredMovementY ==  0; };
+	static const auto goingDown = [&] () { return myDesiredMovementX ==  0 && myDesiredMovementY ==  1; };
+	static const auto goLeft = [&] () { myDesiredMovementX = -1; myDesiredMovementY =  0; };
+	static const auto goUp   = [&] () { myDesiredMovementX =  0; myDesiredMovementY = -1; };
+	static const auto goRight= [&] () { myDesiredMovementX =  1; myDesiredMovementY =  0; };
+	static const auto goDown = [&] () { myDesiredMovementX =  0; myDesiredMovementY =  1; };
+	static const auto canGoLeft = [&] () { return aWorld->TileIsValid(myCurrentTileX-1, myCurrentTileY+0); };
+	static const auto canGoUp   = [&] () { return aWorld->TileIsValid(myCurrentTileX+0, myCurrentTileY-1); };
+	static const auto canGoRight= [&] () { return aWorld->TileIsValid(myCurrentTileX+1, myCurrentTileY+0); };
+	static const auto canGoDown = [&] () { return aWorld->TileIsValid(myCurrentTileX+0, myCurrentTileY+1); };
 
 	if (IsAtDestination())
 	{
@@ -105,8 +104,7 @@ void Ghost::Update(float aTime, World* aWorld)
 				else
 					goUp();
 			}
-			
-
+		
 			myIsDeadFlag = false;
 		}
 	}

@@ -19,7 +19,7 @@ namespace
 }
 void World::Init()
 {
-	myDrawer->registerImage(FIELD);
+	myDrawer->RegisterImage(FIELD);
 	InitPathmap();
 	InitDots();
 	InitBigDots();

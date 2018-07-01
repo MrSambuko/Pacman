@@ -8,7 +8,7 @@ GameEntity::GameEntity(const Vector2f& aPosition, Drawer* aDrawer, std::string&&
 ,myImage(anImage)
 ,myDrawer(aDrawer)
 {
-	aDrawer->registerImage(anImage);
+	aDrawer->RegisterImage(anImage);
 }
 
 void GameEntity::Draw() const
