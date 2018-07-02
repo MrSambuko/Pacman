@@ -19,9 +19,6 @@ RedGhost::RedGhost(const Vector2f & aPosition, Drawer * aDrawer, World * aWorld)
 
 void RedGhost::Update( float aTime, const Pacman* aPacman )
 {
-	if (myState == FRIGHTENED)
-		mySpeed = DEAD_GHOST_SPEED;
-
 	const auto& numDots = myWorld->DotsLeft();
 
 	if (numDots < initialDotsNum * 0.33f)

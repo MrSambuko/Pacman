@@ -7,7 +7,7 @@
 
 namespace
 {
-const char IMAGE[] = "ghost_32_red.png";//"ghost_32_pink.png";
+const char IMAGE[] = "ghost_32_pink.png";
 }
 
 PinkGhost::PinkGhost( const Vector2f& aPosition, Drawer* aDrawer, World* aWorld ): Ghost(

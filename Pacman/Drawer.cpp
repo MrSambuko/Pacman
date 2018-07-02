@@ -6,6 +6,7 @@
 #include "Constants.h"
 
 #include "Drawer.h"
+#include <algorithm>
 
 namespace
 {
@@ -46,10 +47,16 @@ Drawer::~Drawer()
 
 void Drawer::Draw( const std::string& anImage, int aCellX, int aCellY )
 {
-	if (myItemsToDraw.find(anImage) != myItemsToDraw.end())
-		myItemsToDraw[anImage].push_back({aCellX, aCellY});
+	const auto comparator = [&](std::pair<std::string, std::vector<std::pair<int, int>>>& item)
+	{
+		return item.first == anImage;
+	};
+
+	auto& it = std::find_if(myItemsToDraw.begin(), myItemsToDraw.end(), comparator);
+	if (it != myItemsToDraw.end())
+		it->second.push_back({aCellX, aCellY});
 	else
-		myItemsToDraw[anImage] = {{aCellX, aCellY}};
+		myItemsToDraw.push_back({anImage, {{aCellX, aCellY}}});
 }
 
 void Drawer::RegisterImage( const std::string& anImage)

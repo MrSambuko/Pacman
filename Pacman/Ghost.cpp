@@ -32,6 +32,11 @@ Ghost::Ghost(const Vector2f& aPosition, Drawer* aDrawer, World* aWorld, std::str
 void Ghost::ChangeState(GhostState aNewState)
 {
 	myState = aNewState;
+	if (myState == DEAD)
+		mySpeed = DEAD_GHOST_SPEED;
+	else
+		mySpeed = GHOST_SPEED;
+
 	myPath.clear();
 }
 

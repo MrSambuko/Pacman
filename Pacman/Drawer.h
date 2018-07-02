@@ -1,7 +1,7 @@
 #pragma once
 
 #include <unordered_map>
-#include <map>
+#include <vector>
 #include "SDL_ttf.h"
 #include "SDL_rect.h"
 
@@ -14,7 +14,7 @@ struct SDL_Texture;
 namespace
 {
 using SDLRenderItems = std::unordered_map<std::string, std::pair<SDL_Surface*, SDL_Texture*>>;
-using SDLItemsToDraw = std::unordered_map<std::string, std::vector<std::pair<int, int>>>;
+using SDLItemsToDraw = std::vector<std::pair<std::string, std::vector<std::pair<int, int>>>>;
 using SDLTextInfo = std::tuple<SDL_Surface*, SDL_Texture*, SDL_Rect, SDL_Rect>;
 using SDLTextLables = std::unordered_map<std::string, SDLTextInfo>;
 }
