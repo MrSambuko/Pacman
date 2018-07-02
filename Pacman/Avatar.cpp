@@ -81,3 +81,11 @@ void Avatar::Draw() const
 	myDrawer->Draw(image, static_cast<int>(myPosition.myX), static_cast<int>(myPosition.myY));
 }
 
+void Avatar::GetDirection( int* __restrict directionX, int* __restrict directionY ) const
+{
+	auto direction = myDirection;
+	direction.Normalize();
+	*directionX = static_cast<int>(direction.myX);
+	*directionY = static_cast<int>(direction.myY);
+}
+

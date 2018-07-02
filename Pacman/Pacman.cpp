@@ -104,8 +104,11 @@ bool Pacman::Update(const SDL_Event* event, float aTime)
 	myAvatar->Update(aTime);
 	const auto& x = myAvatar->GetCurrentTileX();
 	const auto& y = myAvatar->GetCurrentTileY();
+	int xDir = 0;
+	int yDir = 0;
+	myAvatar->GetDirection(&xDir, &yDir);
 	for (auto& ghost : myGhosts)
-		ghost->Update(aTime, x, y);
+		ghost->Update(aTime, this);
 
 	if (myWorld->HasIntersectedDot(myAvatar->GetPosition()))
 		myScore += 10;
@@ -234,4 +237,21 @@ void Pacman::Draw() const
 	myDrawer->DrawText(std::to_string(myFps), 950, 50);
 
 	myDrawer->Draw();
+}
+
+void Pacman::GetAvatarPosition( int* __restrict aPosX, int*__restrict  aPosY ) const
+{
+	*aPosX = myAvatar->GetCurrentTileX();
+	*aPosY = myAvatar->GetCurrentTileY();
+}
+
+void Pacman::GetAvatarDirection( int* __restrict aDirX, int* __restrict aDirY ) const
+{
+	myAvatar->GetDirection(aDirX, aDirY);
+}
+
+void Pacman::GetRedGhostPos( int* __restrict aPosX, int* __restrict aPosY ) const
+{
+	*aPosX = myGhosts[0]->GetCurrentTileX();
+	*aPosY = myGhosts[0]->GetCurrentTileY();
 }

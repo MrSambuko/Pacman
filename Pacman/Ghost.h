@@ -6,6 +6,7 @@
 #include <unordered_set>
 
 class World;
+class Pacman;
 
 enum GhostState
 {
@@ -24,7 +25,7 @@ public:
 
 	void ChangeState(GhostState aNewState);
 	GhostState GetState() const { return myState; }
-	virtual void Update(float aTime, int anAvatarTileX, int anAvatarTileY);
+	virtual void Update( float aTime, const Pacman* aPacman );
 
 	void Draw() const override;
 
@@ -34,7 +35,7 @@ public:
 	bool myIsDeadFlag;
 protected:
 	void GoHome();
-	virtual void GetNextTile( int anAvatarPositionX, int anAvatarPositionY ) = 0;
+	virtual void GetNextTile( const Pacman* aPacman ) = 0;
 
 	World* myWorld;
 	int myDesiredMovementX;

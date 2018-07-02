@@ -1,5 +1,6 @@
 #include "Ghost.h"
 #include "World.h"
+#include "Pacman.h"
 #include "PathmapTile.h"
 #include "Drawer.h"
 
@@ -34,9 +35,9 @@ void Ghost::ChangeState(GhostState aNewState)
 	myPath.clear();
 }
 
-void Ghost::Update(float aTime, int anAvatarTileX, int anAvatarTileY)
+void Ghost::Update( float aTime, const Pacman* aPacman )
 {
-	static auto popNext = [&]()
+	const auto popNext = [&]()
 	{
 		const auto& nextTile = myPath.back();
 		myPath.pop_back();
@@ -53,14 +54,21 @@ void Ghost::Update(float aTime, int anAvatarTileX, int anAvatarTileY)
 		}
 		else if (myState == DEAD && myPath.empty())
 		{
-			GoHome();
-			popNext();
+			if (myCurrentTileX != START_GHOST_TILE_X && myCurrentTileY != START_GHOST_TILE_Y)
+			{
+				GoHome();
+				popNext();
+			}
+			else
+			{
+				ChangeState(CHASE);
+			}
 		}
 		else
 		{
 			if (myPath.empty())
 			{
-				GetNextTile(anAvatarTileX, anAvatarTileY);
+				GetNextTile(aPacman);
 			}
 			else
 			{

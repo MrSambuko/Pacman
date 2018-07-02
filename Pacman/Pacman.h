@@ -19,6 +19,10 @@ public:
 	bool Update(const SDL_Event* event, float aTime);
 	void Draw() const;
 
+	void GetAvatarPosition(int* __restrict aPosX, int* __restrict aPosY) const;
+	void GetAvatarDirection(int* __restrict aDirX, int* __restrict aDirY) const;
+	void GetRedGhostPos(int* __restrict aPosX, int* __restrict aPosY) const;
+
 private:
 	Pacman(Drawer* aDrawer);
 	bool Init() const;

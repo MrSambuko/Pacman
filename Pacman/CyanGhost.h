@@ -9,5 +9,5 @@ public:
 	CyanGhost( const Vector2f& aPosition, Drawer* aDrawer, World* aWorld);
 
 protected:
-	void GetNextTile( int anAvatarPositionX, int anAvatarPositionY ) override;
+	void GetNextTile( const Pacman* aPacman ) override;
 };

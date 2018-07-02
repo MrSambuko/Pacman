@@ -2,6 +2,7 @@
 
 #include "Constants.h"
 #include "RedGhost.h"
+#include "Pacman.h"
 #include "World.h"
 
 namespace
@@ -16,7 +17,7 @@ RedGhost::RedGhost(const Vector2f & aPosition, Drawer * aDrawer, World * aWorld)
 }
 
 
-void RedGhost::Update(float aTime, int anAvatarTileX, int anAvatarTileY)
+void RedGhost::Update( float aTime, const Pacman* aPacman )
 {
 	if (myState == FRIGHTENED)
 		mySpeed = DEAD_GHOST_SPEED;
@@ -32,21 +33,24 @@ void RedGhost::Update(float aTime, int anAvatarTileX, int anAvatarTileY)
 		mySpeed *= 1.05f;
 	}
 
-	Ghost::Update(aTime, anAvatarTileX, anAvatarTileY);
+	Ghost::Update(aTime, aPacman);
 }
 
 
 
 
-void RedGhost::GetNextTile( int anAvatarPositionX, int anAvatarPositionY )
+void RedGhost::GetNextTile( const Pacman* aPacman )
 {
+	int avatarPositionX = 0;
+	int avatarPositionY = 0;
+	aPacman->GetAvatarPosition(&avatarPositionX, &avatarPositionY);
 	switch (myState)
 	{
 	case CHASE:
 	{
 		// each step choose player's tile as target
 		std::vector<PathmapTilePtr> pathToAvatar;
-		myWorld->GetPath(myCurrentTileX, myCurrentTileY, anAvatarPositionX, anAvatarPositionY, &pathToAvatar);
+		myWorld->GetPath(myCurrentTileX, myCurrentTileY, avatarPositionX, avatarPositionY, &pathToAvatar);
 		const size_t& index = pathToAvatar.size() - 1;
 		myNextTileX = pathToAvatar[index]->myX;
 		myNextTileY = pathToAvatar[index]->myY;
@@ -57,7 +61,7 @@ void RedGhost::GetNextTile( int anAvatarPositionX, int anAvatarPositionY )
 		if (myWorld->DotsLeft() < initialDotsNum * 0.25f)
 		{
 			std::vector<PathmapTilePtr> pathToAvatar;
-			myWorld->GetPath(anAvatarPositionX, anAvatarPositionY, myCurrentTileX, myCurrentTileY, &pathToAvatar);
+			myWorld->GetPath(avatarPositionX, avatarPositionY, myCurrentTileX, myCurrentTileY, &pathToAvatar);
 			myNextTileX = pathToAvatar[0]->myX;
 			myNextTileY = pathToAvatar[0]->myY;
 		}

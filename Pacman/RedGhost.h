@@ -8,9 +8,9 @@ class RedGhost : public Ghost
 public:
 	RedGhost(const Vector2f& aPosition, Drawer* aDrawer, World* aWorld);
 
-	void Update(float aTime, int anAvatarTileX, int anAvatarTileY) override;
+	void Update( float aTime, const Pacman* pacman ) override;
 private:
-	void GetNextTile( int anAvatarPositionX, int anAvatarPositionY ) override;
+	void GetNextTile( const Pacman* aPacman ) override;
 
 	std::vector<PathmapTilePtr> GetPathToPlayer();
 

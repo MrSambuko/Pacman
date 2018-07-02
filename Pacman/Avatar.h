@@ -11,6 +11,8 @@ public:
 	void Update(float aTime);
 	void Draw() const override;
 
+	void GetDirection(int* __restrict directionX, int* __restrict directionY) const;
+
 private:
 	Vector2f myDirection;
 	bool myIsClosed;

@@ -13,7 +13,7 @@ OrangeGhost::OrangeGhost( const Vector2f& aPosition, Drawer* aDrawer, World* aWo
 {
 }
 
-void OrangeGhost::GetNextTile( int anAvatarPositionX, int anAvatarPositionY )
+void OrangeGhost::GetNextTile( const Pacman* aPacman )
 {
 	switch (myState)
 	{
