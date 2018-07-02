@@ -1,3 +1,4 @@
+#include "Pacman.h"
 #include "OrangeGhost.h"
 
 #include "World.h"
@@ -18,7 +19,32 @@ void OrangeGhost::GetNextTile( const Pacman* aPacman )
 	switch (myState)
 	{
 	case CHASE:
+	{
+		int avatarPosX = 0;
+		int avatarPosY = 0;
+		aPacman->GetAvatarPosition(&avatarPosX, &avatarPosY);
+
+		if (abs(myCurrentTileX - avatarPosX) + abs(myCurrentTileY - avatarPosY) < 8)
+		{
+			std::vector<PathmapTilePtr> pathToAvatar;
+			myWorld->GetPath(myCurrentTileX, myCurrentTileY, BOTTOM_LEFT_X, BOTTOM_LEFT_Y, &pathToAvatar);
+			const size_t& index = pathToAvatar.size() - 1;
+
+			myNextTileX = pathToAvatar[index]->myX;
+			myNextTileY = pathToAvatar[index]->myY;
+		}
+		else
+		{
+			std::vector<PathmapTilePtr> pathToAvatar;
+			myWorld->GetPath(myCurrentTileX, myCurrentTileY, avatarPosX, avatarPosY, &pathToAvatar);
+			const size_t& index = pathToAvatar.size() - 1;
+
+			myNextTileX = pathToAvatar[index]->myX;
+			myNextTileY = pathToAvatar[index]->myY;
+		}
 		break;
+	}
+		
 
 	case SCATTER:
 		myWorld->GetPath(myCurrentTileX, myCurrentTileY, BOTTOM_LEFT_X, BOTTOM_LEFT_Y, &myPath);

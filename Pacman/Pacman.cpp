@@ -123,6 +123,7 @@ bool Pacman::Update(const SDL_Event* event, float aTime)
 			ghost->ChangeState(FRIGHTENED);
 	}
 
+	/*
 	if (myGhostGhostCounter <= 0)
 	{
 		static int i = 0;
@@ -131,6 +132,7 @@ bool Pacman::Update(const SDL_Event* event, float aTime)
 			ghost->ChangeState(newState);
 		myGhostGhostCounter = 20.f;
 	}
+	*/
 
 	for (auto& ghost : myGhosts)
 	{
