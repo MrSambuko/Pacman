@@ -2,8 +2,6 @@
 #include "Drawer.h"
 #include "SDL.h"
 #include "SDL_events.h"
-#include <iostream>
-#include <sstream>
 #include <string>
 
 #include "Avatar.h"
@@ -11,6 +9,9 @@
 #include "RedGhost.h"
 
 #include <unordered_map>
+#include "PinkGhost.h"
+#include "OrangeGhost.h"
+#include "CyanGhost.h"
 
 namespace {
 std::unordered_map<SDL_Keycode, int> KEY_TO_DIRECTION =
@@ -63,7 +64,11 @@ Pacman::Pacman(Drawer* aDrawer)
 {
 	myWorld = new World(myDrawer);
 	myAvatar = new Avatar(START_PLAYER_POS, aDrawer);
-	myGhost = new RedGhost(START_GHOST_POS, aDrawer, myWorld);	
+
+	myGhosts[0] = new RedGhost(START_GHOST_POS, aDrawer, myWorld);
+	myGhosts[1] = new PinkGhost(START_GHOST_POS, aDrawer, myWorld);
+	myGhosts[2] = new OrangeGhost(START_GHOST_POS, aDrawer, myWorld);
+	myGhosts[3] = new CyanGhost(START_GHOST_POS, aDrawer, myWorld);
 
 	myDrawer->RegisterTextLabel(SCORE_LABEL, 20, 50);
 	myDrawer->RegisterTextLabel(LIVES_LABEL, 20, 80);
@@ -97,7 +102,10 @@ bool Pacman::Update(const SDL_Event* event, float aTime)
 
 	MoveAvatar();
 	myAvatar->Update(aTime);
-	myGhost->Update(aTime, myAvatar->GetCurrentTileX(), myAvatar->GetCurrentTileY());
+	const auto& x = myAvatar->GetCurrentTileX();
+	const auto& y = myAvatar->GetCurrentTileY();
+	for (auto& ghost : myGhosts)
+		ghost->Update(aTime, x, y);
 
 	if (myWorld->HasIntersectedDot(myAvatar->GetPosition()))
 		myScore += 10;
@@ -108,30 +116,45 @@ bool Pacman::Update(const SDL_Event* event, float aTime)
 	{
 		myScore += 20;
 		myGhostGhostCounter = 20.f;
-		myGhost->myIsClaimableFlag = true;
+		for (auto& ghost : myGhosts)
+			ghost->ChangeState(FRIGHTENED);
 	}
 
 	if (myGhostGhostCounter <= 0)
 	{
-		myGhost->myIsClaimableFlag = false;
+		static int i = 0;
+		const auto& newState = i++ % 2 ? SCATTER : CHASE;
+		for (auto& ghost : myGhosts)
+			ghost->ChangeState(newState);
+		myGhostGhostCounter = 20.f;
 	}
 
-	if ((myGhost->GetPosition() - myAvatar->GetPosition()).Length() < 10.f)
+	for (auto& ghost : myGhosts)
 	{
-		if (myGhostGhostCounter <= 0.f)
+		const auto& state = ghost->GetState();
+		
+		if ((ghost->GetPosition() - myAvatar->GetPosition()).Length() < TILE_SIZE * 0.5f)
 		{
-			myLives--;
+			switch (state)
+			{
+			case CHASE:
+			case SCATTER:
+				--myLives;
+				Reset();
+				break;
 
-			Reset();
+			case FRIGHTENED:
+				myScore += 50;
+				ghost->ChangeState(DEAD);
+				break;
+
+			case DEAD:
+				break;
+			}
 		}
-		else if (myGhost->myIsClaimableFlag && !myGhost->myIsDeadFlag)
-		{
-			myScore += 50;
-			myGhost->myIsDeadFlag = true;
-			myGhost->ChangeState(FRIGHTENED);
-		}
+
 	}
-	
+
 	if (aTime > 0)
 		myFps = static_cast<int>((1 / aTime));
 
@@ -190,14 +213,16 @@ bool Pacman::CheckEndGameCondition() const
 void Pacman::Reset() const
 {
 	myAvatar->Reset(START_PLAYER_POS);
-	myGhost->Reset(START_GHOST_POS);
+	for (auto& ghost : myGhosts)
+		ghost->Reset(START_GHOST_POS);
 }
 
 void Pacman::Draw() const
 {
 	myWorld->Draw();
 	myAvatar->Draw();
-	myGhost->Draw();
+	for (const auto& ghost : myGhosts)
+		ghost->Draw();
 
 	myDrawer->DrawLabel(SCORE_LABEL);
 	myDrawer->DrawText(std::to_string(myScore), 110, 50);

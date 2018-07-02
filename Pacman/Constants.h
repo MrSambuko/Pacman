@@ -33,11 +33,11 @@ constexpr const float PLAYER_SPEED = 90.f;
 
 constexpr extern const float EPSILON = 0.000001f;
 
-constexpr const int TOP_LEFT_X = 1;
-constexpr const int TOP_LEFT_Y = 1;
-constexpr const int TOP_RIGHT_X = 26;
-constexpr const int TOP_RIGHT_Y = 1;
+constexpr const int TOP_LEFT_X = 0;
+constexpr const int TOP_LEFT_Y = 0;
+constexpr const int TOP_RIGHT_X = 27;
+constexpr const int TOP_RIGHT_Y = 0;
 constexpr const int BOTTOM_LEFT_X = 1;
-constexpr const int BOTTOM_LEFT_Y = 27;
-constexpr const int BOTTOM_RIGHT_X = 26;
-constexpr const int BOTTOM_RIGHT_Y = 27;
+constexpr const int BOTTOM_LEFT_Y = 28;
+constexpr const int BOTTOM_RIGHT_X = 27;
+constexpr const int BOTTOM_RIGHT_Y = 28;

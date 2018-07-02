@@ -10,7 +10,7 @@ public:
 
 	void Update(float aTime, int anAvatarTileX, int anAvatarTileY) override;
 private:
-	void GetNextTile(int* aNextTileX, int* aNextTileY, int anAvatarPositionX, int anAvatarPositionY) override;
+	void GetNextTile( int anAvatarPositionX, int anAvatarPositionY ) override;
 
 	std::vector<PathmapTilePtr> GetPathToPlayer();
 

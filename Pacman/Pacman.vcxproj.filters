@@ -65,6 +65,15 @@
       <Filter>Game\Game entities\Movable</Filter>
     </ClCompile>
     <ClCompile Include="Common.cpp" />
+    <ClCompile Include="PinkGhost.cpp">
+      <Filter>Game\Game entities\Movable</Filter>
+    </ClCompile>
+    <ClCompile Include="OrangeGhost.cpp">
+      <Filter>Game\Game entities\Movable</Filter>
+    </ClCompile>
+    <ClCompile Include="CyanGhost.cpp">
+      <Filter>Game\Game entities\Movable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pacman.h">
@@ -114,6 +123,15 @@
     </ClInclude>
     <ClInclude Include="Common.h">
       <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="PinkGhost.h">
+      <Filter>Game\Game entities\Movable</Filter>
+    </ClInclude>
+    <ClInclude Include="OrangeGhost.h">
+      <Filter>Game\Game entities\Movable</Filter>
+    </ClInclude>
+    <ClInclude Include="CyanGhost.h">
+      <Filter>Game\Game entities\Movable</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

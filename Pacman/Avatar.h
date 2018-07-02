@@ -9,7 +9,7 @@ public:
 	Avatar(const Vector2f& aPosition, Drawer* aDrawer);
 
 	void Update(float aTime);
-	void Draw() const;
+	void Draw() const override;
 
 private:
 	Vector2f myDirection;

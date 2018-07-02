@@ -1,9 +1,11 @@
+#include <cassert>
+
 #include "SDL.h"
 #include "SDL_image.h"
 #include "SDL_ttf.h"
-#include "assert.h"
-#include "pacman.h"
-#include "drawer.h"
+
+#include "Pacman.h"
+#include "Drawer.h"
 
 namespace
 {
@@ -36,7 +38,7 @@ int main(int argc, char **argv)
 		exit(-1);
 	}
 
-	auto font = TTF_OpenFont(FONT, 24);
+	const auto font = TTF_OpenFont(FONT, 24);
 	Drawer* drawer = Drawer::Create(window, renderer, font);
 	Pacman* pacman = Pacman::Create(drawer);
 

@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "Ghost.h"
 #include "World.h"
 #include "PathmapTile.h"
@@ -8,7 +6,6 @@
 
 namespace
 {
-	const char GHOST[] = "ghost_32.png";
 	const char GHOST_DEAD[] = "Ghost_Dead_32.png";
 	const char GHOST_VULNERABLE[] = "Ghost_Vulnerable_32.png";
 }
@@ -18,6 +15,8 @@ Ghost::Ghost(const Vector2f& aPosition, Drawer* aDrawer, World* aWorld, std::str
 , myWorld(aWorld)
 , mySpeed(GHOST_SPEED)
 , myState(CHASE)
+, myPreviousTileX(0)
+, myPreviousTileY(0)
 {
 	myIsClaimableFlag = false;
 	myIsDeadFlag = false;
@@ -37,32 +36,38 @@ void Ghost::ChangeState(GhostState aNewState)
 
 void Ghost::Update(float aTime, int anAvatarTileX, int anAvatarTileY)
 {
-	int nextTileX = 0;
-	int nextTileY = 0;
-	
-	if (myPath.empty())
-		GetNextTile(&myNextTileX, &myNextTileY, anAvatarTileX, anAvatarTileY);
+	static auto popNext = [&]()
+	{
+		const auto& nextTile = myPath.back();
+		myPath.pop_back();
+		SetNextTile(nextTile->myX, nextTile->myY);
+	};
 
 	if (IsAtDestination())
 	{
-		if (!myPath.empty())
+		if (myState == FRIGHTENED)
 		{
-			const auto& nextTile = myPath.back();
-			myPath.pop_back();
-			SetNextTile(nextTile->myX, nextTile->myY);
+			const auto& tile = myWorld->getRandomNearbyTile(myCurrentTileX, myCurrentTileY, myPreviousTileX, myPreviousTileY);
+			myNextTileX = tile->myX;
+			myNextTileY = tile->myY;
+		}
+		else if (myState == DEAD && myPath.empty())
+		{
+			GoHome();
+			popNext();
 		}
 		else
 		{
-			SetNextTile(nextTileX, nextTileY);
+			if (myPath.empty())
+			{
+				GetNextTile(anAvatarTileX, anAvatarTileY);
+			}
+			else
+			{
+				popNext();
+			}
 		}
-	}
-
-	if (myState == FRIGHTENED)
-	{
-		const auto& tile = myWorld->getRandomNearbyTile(myNextTileX, myNextTileY, myCurrentTileX, myCurrentTileY);
-		myNextTileX = tile->myX;
-		myNextTileY = tile->myY;
-	}
+	}	
 
 	const Vector2f destination(static_cast<float>(myNextTileX * TILE_SIZE), static_cast<float>(myNextTileY * TILE_SIZE));
 	Vector2f direction = destination - myPosition;
@@ -72,6 +77,8 @@ void Ghost::Update(float aTime, int anAvatarTileX, int anAvatarTileY)
 	if (distanceToMove > direction.Length())
 	{
 		myPosition = destination;
+		myPreviousTileX = myCurrentTileX;
+		myPreviousTileY = myCurrentTileY;
 		myCurrentTileX = myNextTileX;
 		myCurrentTileY = myNextTileY;
 	}
@@ -85,12 +92,17 @@ void Ghost::Update(float aTime, int anAvatarTileX, int anAvatarTileY)
 
 void Ghost::Draw() const
 {
-	if (myIsDeadFlag)
-		myDrawer->Draw(GHOST_DEAD, static_cast<int>(myPosition.myX), static_cast<int>(myPosition.myY));
-	else if (myIsClaimableFlag)
+	switch (myState)
+	{
+	case FRIGHTENED:
 		myDrawer->Draw(GHOST_VULNERABLE, static_cast<int>(myPosition.myX), static_cast<int>(myPosition.myY));
-	else
+		break;
+	case DEAD:
+		myDrawer->Draw(GHOST_DEAD, static_cast<int>(myPosition.myX), static_cast<int>(myPosition.myY));
+		break;
+	default:
 		myDrawer->Draw(myImage, static_cast<int>(myPosition.myX), static_cast<int>(myPosition.myY));
+	}
 }
 
 void Ghost::Reset( const Vector2f& toPosition )

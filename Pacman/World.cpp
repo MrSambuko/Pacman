@@ -1,5 +1,6 @@
-#include "World.h"
+#include <cassert>
 #include <algorithm>
+#include <queue>
 #include <fstream>
 #include <string>
 
@@ -8,10 +9,9 @@
 #include "BigDot.h"
 #include "Drawer.h"
 #include "Constants.h"
-#include <set>
-#include <algorithm>
-#include <queue>
 #include "Common.h"
+
+#include "World.h"
 
 namespace
 {
@@ -176,8 +176,7 @@ void World::GetPath(int aFromX, int aFromY, int aToX, int aToY, std::vector<Path
 	
 	*aList = myPaths[x][y];
 #endif
-	Pathfind(std::move(fromTile), std::move(toTile), aList);
-	return;
+	Pathfind(fromTile, toTile, aList);
 }
 
 PathmapTilePtr World::getRandomNearbyTile(int currentTileX, int currentTileY, int prevTileX, int prevTileY)
@@ -189,22 +188,20 @@ PathmapTilePtr World::getRandomNearbyTile(int currentTileX, int currentTileY, in
 	const auto& size = nearbyTiles.size();
 	if (size == 0)
 		return prevTile;
-	else if (size == 1)
+	if (size == 1)
 		return *nearbyTiles.begin();
-	else
-	{
-		const size_t targetIndex = getRandomInt(0, size-1);
-		auto it = nearbyTiles.begin();
-		for (size_t index = 0; index < targetIndex; ++index)
-			++it;
-		return *it;
-	}
+
+	const size_t targetIndex = getRandomInt(0, size-1);
+	auto it = nearbyTiles.begin();
+	for (size_t index = 0; index < targetIndex; ++index)
+		++it;
+	return *it;
 }
 
 PathmapTilePtr World::GetTile(int aFromX, int aFromY) const
 {
 	// as we don't care for flag search for flase & true same way
-	auto tile = makePathTilePtr(aFromX, aFromY, true);
+	const auto tile = makePathTilePtr(aFromX, aFromY, true);
 	const auto end = myPathmapTiles.end();
 	auto it = myPathmapTiles.find(tile);
 
@@ -224,6 +221,9 @@ bool World::Pathfind(const PathmapTilePtr& aFromTile, const PathmapTilePtr& aToT
 
 	const auto& start = myGraph.find(aFromTile);
 	const auto& end = myGraph.find(aToTile);
+
+	assert(start != myGraph.end() && ("Can't find tile " + std::to_string(aFromTile->myX) + "." + std::to_string(aFromTile->myY)).c_str());
+	assert(end != myGraph.end() && ("Can't find tile " + std::to_string(aToTile->myX) + "." + std::to_string(aToTile->myY)).c_str());
 
 	queue.push(aFromTile);
 	std::unordered_map<PathmapTilePtr, PathmapTilePtr> visited;

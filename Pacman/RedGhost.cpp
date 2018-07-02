@@ -38,7 +38,7 @@ void RedGhost::Update(float aTime, int anAvatarTileX, int anAvatarTileY)
 
 
 
-void RedGhost::GetNextTile(int* aNextTileX, int* aNextTileY, int anAvatarPositionX, int anAvatarPositionY)
+void RedGhost::GetNextTile( int anAvatarPositionX, int anAvatarPositionY )
 {
 	switch (myState)
 	{
@@ -71,9 +71,6 @@ void RedGhost::GetNextTile(int* aNextTileX, int* aNextTileY, int anAvatarPositio
 		break;
 
 	case DEAD:
-		GoHome();
-		*aNextTileX = myNextTileX;
-		*aNextTileY = myNextTileY;
 		break;
 
 	default:

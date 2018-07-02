@@ -23,6 +23,7 @@ public:
 	Ghost(const Vector2f& aPosition, Drawer* aDrawer, World* aWorld, std::string&& anImage);
 
 	void ChangeState(GhostState aNewState);
+	GhostState GetState() const { return myState; }
 	virtual void Update(float aTime, int anAvatarTileX, int anAvatarTileY);
 
 	void Draw() const override;
@@ -33,7 +34,7 @@ public:
 	bool myIsDeadFlag;
 protected:
 	void GoHome();
-	virtual void GetNextTile(int* aNextTileX, int* aNextTileY, int anAvatarPositionX, int anAvatarPositionY) = 0;
+	virtual void GetNextTile( int anAvatarPositionX, int anAvatarPositionY ) = 0;
 
 	World* myWorld;
 	int myDesiredMovementX;
@@ -44,4 +45,7 @@ protected:
 	GhostState myState;
 	std::vector<PathmapTilePtr> myPath;
 
+private:
+	int myPreviousTileX;
+	int myPreviousTileY;
 };

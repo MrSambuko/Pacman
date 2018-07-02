@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 
 #include "Vector2f.h"
 
@@ -39,7 +40,7 @@ private:
 	int myDirection;
 
 	Avatar* myAvatar;
-	Ghost* myGhost;
+	std::array<Ghost*, 4> myGhosts;
 	World* myWorld;
 
 };

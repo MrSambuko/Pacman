@@ -30,8 +30,8 @@ std::unordered_map<Vector2f, std::pair<const char*, const char*>, Vector2f::Hash
 
 Avatar::Avatar(const Vector2f& aPosition, Drawer* aDrawer)
 : MovableGameEntity(aPosition, aDrawer, DEAFULT)
-, myIsClosed(true)
 , myDirection(NO_DIRECTION)
+, myIsClosed(true)
 {
 	aDrawer->RegisterImage(OPEN_LEFT);
 	aDrawer->RegisterImage(OPEN_UP);
@@ -47,7 +47,7 @@ Avatar::Avatar(const Vector2f& aPosition, Drawer* aDrawer)
 void Avatar::Update(float aTime)
 {
 	const Vector2f destination(static_cast<float>(myNextTileX * TILE_SIZE), static_cast<float>(myNextTileY * TILE_SIZE));
-	Vector2f& direction = destination - myPosition;
+	Vector2f direction = destination - myPosition;
 	const Vector2f& newDirection = { static_cast<float>(myNextTileX - myCurrentTileX), static_cast<float>(myNextTileY - myCurrentTileY) };
 	if (newDirection != NO_DIRECTION)
 		myDirection = std::move(newDirection);

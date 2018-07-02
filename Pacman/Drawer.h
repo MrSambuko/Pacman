@@ -1,8 +1,10 @@
 #pragma once
 
 #include <unordered_map>
+#include <map>
 #include "SDL_ttf.h"
 #include "SDL_rect.h"
+
 
 struct SDL_Window;
 struct SDL_Renderer;
@@ -34,6 +36,11 @@ public:
 
 private:
 	Drawer(SDL_Window* aWindow, SDL_Renderer* aRenderer, TTF_Font* aFont);
+	Drawer(const Drawer&) = default;
+	Drawer(Drawer&&) = default;
+	Drawer& operator = (const Drawer&) = default;
+	Drawer& operator = (Drawer&&) = default;
+
 	bool Init() const;
 
 	void DrawImages();
