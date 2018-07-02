@@ -34,6 +34,10 @@ public:
 	void DrawLabel(const std::string& label);
 	void DrawText(const std::string& aText, int aX, int aY);
 
+#ifdef _DEBUG
+	void DrawLine(int fromX, int fromY, int toX, int toY);
+#endif
+
 private:
 	Drawer(SDL_Window* aWindow, SDL_Renderer* aRenderer, TTF_Font* aFont);
 	Drawer(const Drawer&) = default;
@@ -45,6 +49,9 @@ private:
 
 	void DrawImages();
 	void DrawTexts();
+#ifdef _DEBUG
+	void DrawLines();
+#endif
 	
 	SDL_Window* myWindow;
 	SDL_Renderer* myRenderer;
@@ -56,4 +63,7 @@ private:
 	SDLTextLables myTextLabelItems;
 	std::vector<std::string> myTextLablesToDraw;
 	std::vector<SDLTextInfo> myTextsToDraw;
+#ifdef _DEBUG
+	std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>> myLines;
+#endif
 };

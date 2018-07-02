@@ -179,7 +179,7 @@ void World::GetPath(int aFromX, int aFromY, int aToX, int aToY, std::vector<Path
 	Pathfind(fromTile, toTile, aList);
 }
 
-PathmapTilePtr World::getRandomNearbyTile(int currentTileX, int currentTileY, int prevTileX, int prevTileY)
+PathmapTilePtr World::GetRandomNearbyTile(int currentTileX, int currentTileY, int prevTileX, int prevTileY)
 {
 	const auto& tile = GetTile(currentTileX, currentTileY);
 	const auto& prevTile = GetTile(prevTileX, prevTileY);

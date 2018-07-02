@@ -29,7 +29,7 @@ public:
 	size_t DotsLeft() const { return myDots.size() + myBigDots.size(); }
 	
 	void GetPath(int aFromX, int aFromY, int aToX, int aToY, std::vector<PathmapTilePtr>* aList);
-	PathmapTilePtr getRandomNearbyTile(int currentTileX, int currentTileY, int prevTileX, int prevTileY);
+	PathmapTilePtr GetRandomNearbyTile(int currentTileX, int currentTileY, int prevTileX, int prevTileY);
 
 private:
 	PathmapTilePtr GetTile(int aFromX, int aFromY) const;

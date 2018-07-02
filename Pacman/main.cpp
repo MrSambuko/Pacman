@@ -60,7 +60,7 @@ int main(int argc, char **argv)
 		lastFrame = currentFrame;		
 
 		SDL_RenderPresent(renderer);
-		SDL_Delay(1);
+		SDL_Delay(10);
 	}
 
 	delete pacman;

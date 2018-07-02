@@ -1,5 +1,8 @@
 #include <cassert>
 
+#ifdef _DEBUG
+#include "Drawer.h"
+#endif
 #include "Pacman.h"
 #include "World.h"
 #include "PinkGhost.h"
@@ -47,15 +50,33 @@ void PinkGhost::GetNextTile( const Pacman* aPacman )
 
 		std::vector<PathmapTilePtr> pathToAvatar;
 		myWorld->GetPath(myCurrentTileX, myCurrentTileY, avatarPositionX+avatarDirectionX, avatarPositionY+avatarDirectionY, &pathToAvatar);
+		if (pathToAvatar.size() == 0)
+			break;
+
 		const size_t& index = pathToAvatar.size() - 1;
 
 		myNextTileX = pathToAvatar[index]->myX;
 		myNextTileY = pathToAvatar[index]->myY;
+
+#ifdef _DEBUG
+		{
+			int x = myNextTileX * TILE_SIZE + X_OFFSET;
+			int y = myNextTileY * TILE_SIZE + Y_OFFSET;
+			myDrawer->DrawLine(myPosition.myX + X_OFFSET, myPosition.myY + Y_OFFSET, x, y);
+		}
+#endif
 		break;
 	}
 
 	case SCATTER:
 		myWorld->GetPath(myCurrentTileX, myCurrentTileY, TOP_RIGHT_X, TOP_RIGHT_Y, &myPath);
+#ifdef _DEBUG
+		{
+			int x = BOTTOM_RIGHT_X * TILE_SIZE + X_OFFSET;
+			int y = BOTTOM_RIGHT_Y * TILE_SIZE + Y_OFFSET;
+			myDrawer->DrawLine(myPosition.myX + X_OFFSET, myPosition.myY + Y_OFFSET, x, y);
+		}
+#endif
 		break;
 
 	case FRIGHTENED:

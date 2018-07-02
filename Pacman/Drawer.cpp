@@ -154,10 +154,23 @@ void Drawer::DrawTexts()
 	myTextsToDraw.clear();
 }
 
+#ifdef _DEBUG
+void Drawer::DrawLines()
+{
+	SDL_SetRenderDrawColor(myRenderer, 255, 255, 255, 255);
+	for (auto&& pair : myLines)
+		SDL_RenderDrawLine(myRenderer, pair.first.first, pair.first.second, pair.second.first, pair.second.second);
+	myLines.clear();
+}
+#endif
+
 void Drawer::Draw()
 {
 	DrawImages();
 	DrawTexts();
+#ifdef _DEBUG
+	DrawLines();
+#endif
 }
 
 Drawer::Drawer(SDL_Window* aWindow, SDL_Renderer* aRenderer, TTF_Font* aFont)
@@ -200,3 +213,10 @@ void Drawer::DrawText(const std::string& aText, int aX, int aY)
 	myTextsToDraw.emplace_back(text);
 
 }
+
+#ifdef _DEBUG
+void Drawer::DrawLine(int fromX, int fromY, int toX, int toY)
+{
+	myLines.push_back({ {fromX, fromY}, {toX, toY} });
+}
+#endif
