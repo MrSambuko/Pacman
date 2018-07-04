@@ -50,11 +50,10 @@ void CyanGhost::GetNextTile( const Pacman* aPacman )
 				y = avatarPoxY;
 			}
 
-			myWorld->GetPath(myCurrentTileX, myCurrentTileY, x, y, &path);
+			myWorld->GetPath(x, y, myCurrentTileX, myCurrentTileY, &path);
 
-			const size_t& index = path.size() - 1;
-			myNextTileX = path[index]->myX;
-			myNextTileY = path[index]->myY;
+			myNextTileX = path[0]->myX;
+			myNextTileY = path[0]->myY;
 
 			break;
 		}
