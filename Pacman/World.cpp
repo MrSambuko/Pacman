@@ -17,7 +17,16 @@ namespace
 {
 constexpr const char FIELD[] = "playfield.png";
 constexpr const char MAP_FILENAME[] = "map.txt";
+
+
+inline size_t MakeIndex(int tileX, int tileY)
+{
+	return tileX*MAX_TILE_NUM + tileY;
 }
+}
+
+
+
 void World::Init()
 {
 	myDrawer->RegisterImage(FIELD);
@@ -98,14 +107,13 @@ void World::BuildTileGraph()
 #ifndef _DEBUG 
 void World::BuildPaths()
 {
-
 	// build paths from each tile to each tile in graph
-	for (auto& tile1 = myGraph.begin(); tile1 != std::prev(myGraph.end()); ++tile1)
+	for (auto tile1 = myGraph.begin(); tile1 != std::prev(myGraph.end()); ++tile1)
 	{
-		const auto& x = tile1->first->myX*MAX_TILE_NUM + tile1->first->myY;
-		for (auto& tile2 = std::next(tile1); tile2 != myGraph.end(); ++tile2)
+		const auto& x = MakeIndex(tile1->first->myX, tile1->first->myY);
+		for (auto tile2 = std::next(tile1); tile2 != myGraph.end(); ++tile2)
 		{
-			const auto& y = tile2->first->myX*MAX_TILE_NUM + tile2->first->myY;
+			const auto& y = MakeIndex(tile2->first->myX, tile2->first->myY);
 			
 			if (!myPaths[x][y].empty())
 				continue;
@@ -129,7 +137,7 @@ void World::Draw() const
 
 bool World::TileIsValid(int anX, int anY)
 {
-	const auto it = myPathmapTiles.find(std::make_shared<PathmapTile>(anX, anY, false));
+	const auto& it = myPathmapTiles.find(std::make_shared<PathmapTile>(anX, anY, false));
 
 	return it != myPathmapTiles.end();
 }
@@ -173,12 +181,13 @@ void World::GetPath(int aFromX, int aFromY, int aToX, int aToY, std::vector<Path
 	auto&& fromTile = GetTile(aFromX, aFromY);
 	auto&& toTile = GetTile(aToX, aToY);
 #ifndef _DEBUG
-	const auto& x = fromTile->myX*MAX_TILE_NUM + fromTile->myY;
-	const auto& y = toTile->myX*MAX_TILE_NUM + toTile->myY;
+	const auto& x = MakeIndex(fromTile->myX, fromTile->myY);
+	const auto& y = MakeIndex(toTile->myX, toTile->myY);
 	
 	*aList = myPaths[x][y];
-#endif
+#else
 	Pathfind(fromTile, toTile, aList);
+#endif
 }
 
 PathmapTilePtr World::GetRandomNearbyTile(int currentTileX, int currentTileY, int prevTileX, int prevTileY)
@@ -219,11 +228,19 @@ PathmapTilePtr World::GetTile(int aFromX, int aFromY) const
 
 bool World::Pathfind(const PathmapTilePtr& aFromTile, const PathmapTilePtr& aToTile, std::vector<PathmapTilePtr>* aList)
 {
-	std::queue<PathmapTilePtr> queue;
+	// check if path is already cached
+	const int& x = MakeIndex(aFromTile->myX, aFromTile->myY);
+	const int& y = MakeIndex(aToTile->myX, aToTile->myY);
 
+	if (!myPaths[x][y].empty())
+	{
+		*aList = myPaths[x][y];
+		return true;
+	}
+	
+	std::queue<PathmapTilePtr> queue;
 	const auto& start = myGraph.find(aFromTile);
 	const auto& end = myGraph.find(aToTile);
-
 	assert(start != myGraph.end() && ("Can't find tile " + std::to_string(aFromTile->myX) + "." + std::to_string(aFromTile->myY)).c_str());
 	assert(end != myGraph.end() && ("Can't find tile " + std::to_string(aToTile->myX) + "." + std::to_string(aToTile->myY)).c_str());
 
@@ -251,12 +268,12 @@ bool World::Pathfind(const PathmapTilePtr& aFromTile, const PathmapTilePtr& aToT
 	}
 	
 	auto current = aToTile;
-	//aList->push_back(aToTile);
 	while (current != aFromTile)
 	{
 		aList->push_back(current);
 		current = visited[current];
 	}
 
+	myPaths[x][y] = myPaths[y][x] = *aList;
 	return false;
 }
