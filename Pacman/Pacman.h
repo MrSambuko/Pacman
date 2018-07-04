@@ -11,10 +11,18 @@ class Avatar;
 class World;
 class Ghost;
 
+enum GameState
+{
+	GAMEPLAY,
+	WIN_SCREEN,
+	LOSE_SCREEN
+};
+
 class Pacman
 {
 public:
 	static Pacman* Create(Drawer* aDrawer);
+	~Pacman();
 
 	bool Update(const SDL_Event* event, float aTime);
 	void Draw() const;
@@ -32,6 +40,8 @@ private:
 
 	void Reset() const;
 
+private:
+	GameState myState;
 	Drawer* myDrawer;
 
 	float myGhostGhostCounter;

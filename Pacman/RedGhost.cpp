@@ -54,12 +54,6 @@ void RedGhost::GetNextTile( const Pacman* aPacman )
 		const size_t& index = pathToAvatar.size() - 1;
 		myNextTileX = pathToAvatar[index]->myX;
 		myNextTileY = pathToAvatar[index]->myY;
-
-#ifdef _DEBUG
-		int x = myNextTileX * TILE_SIZE + X_OFFSET;
-		int y = myNextTileY * TILE_SIZE + Y_OFFSET;
-		myDrawer->DrawLine(myPosition.myX + X_OFFSET, myPosition.myY + Y_OFFSET, x, y);
-#endif
 		break;
 	}
 
@@ -70,20 +64,10 @@ void RedGhost::GetNextTile( const Pacman* aPacman )
 			myWorld->GetPath(avatarPositionX, avatarPositionY, myCurrentTileX, myCurrentTileY, &pathToAvatar);
 			myNextTileX = pathToAvatar[0]->myX;
 			myNextTileY = pathToAvatar[0]->myY;
-#ifdef _DEBUG
-			int x = myNextTileX * TILE_SIZE + X_OFFSET;
-			int y = myNextTileY * TILE_SIZE + Y_OFFSET;
-			myDrawer->DrawLine(myPosition.myX + X_OFFSET, myPosition.myY + Y_OFFSET, x, y);
-#endif
 		}
 		else
 		{
 			myWorld->GetPath(myCurrentTileX, myCurrentTileY, TOP_LEFT_X, TOP_LEFT_Y, &myPath);
-#ifdef _DEBUG
-			int x = TOP_LEFT_X * TILE_SIZE + X_OFFSET;
-			int y = TOP_LEFT_Y * TILE_SIZE + Y_OFFSET;
-			myDrawer->DrawLine(myPosition.myX + X_OFFSET, myPosition.myY + Y_OFFSET, x, y);
-#endif
 		}
 		break;
 

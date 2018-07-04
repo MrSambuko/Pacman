@@ -51,11 +51,6 @@ void CyanGhost::GetNextTile( const Pacman* aPacman )
 			}
 
 			myWorld->GetPath(myCurrentTileX, myCurrentTileY, x, y, &path);
-#ifdef _DEBUG
-			x = x * TILE_SIZE + X_OFFSET;
-			y = y * TILE_SIZE + Y_OFFSET;
-			myDrawer->DrawLine(myPosition.myX+X_OFFSET, myPosition.myY+Y_OFFSET, x, y);
-#endif
 
 			const size_t& index = path.size() - 1;
 			myNextTileX = path[index]->myX;
@@ -67,13 +62,6 @@ void CyanGhost::GetNextTile( const Pacman* aPacman )
 
 	case SCATTER:
 		myWorld->GetPath(myCurrentTileX, myCurrentTileY, BOTTOM_RIGHT_X, BOTTOM_RIGHT_Y, &myPath);
-#ifdef _DEBUG
-		{
-			int x = BOTTOM_RIGHT_X * TILE_SIZE + X_OFFSET;
-			int y = BOTTOM_RIGHT_Y * TILE_SIZE + Y_OFFSET;
-			myDrawer->DrawLine(myPosition.myX + X_OFFSET, myPosition.myY + Y_OFFSET, x, y);
-		}
-#endif
 		break;
 
 	case FRIGHTENED:

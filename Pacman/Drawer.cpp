@@ -192,6 +192,7 @@ void Drawer::DrawLabel(const std::string& label)
 	myTextLablesToDraw.push_back(label);
 }
 
+
 void Drawer::DrawText(const std::string& aText, int aX, int aY)
 {
 	SDL_Surface* surface = TTF_RenderText_Solid(myFont, aText.c_str(), fg);
@@ -214,9 +215,29 @@ void Drawer::DrawText(const std::string& aText, int aX, int aY)
 
 }
 
-#ifdef _DEBUG
-void Drawer::DrawLine(int fromX, int fromY, int toX, int toY)
+void Drawer::DrawMiddleScreenText( const std::string& aText )
 {
-	myLines.push_back({ {fromX, fromY}, {toX, toY} });
+	myItemsToDraw.clear();
+	myTextsToDraw.clear();
+
+	SDL_Surface* surface = TTF_RenderText_Solid(myFont, aText.c_str(), fg);
+	SDL_Texture* optimizedSurface = SDL_CreateTextureFromSurface(myRenderer, surface);
+
+	SDL_Rect sizeRect;
+	sizeRect.x = 0;
+	sizeRect.y = 0;
+	sizeRect.w = surface->w;
+	sizeRect.h = surface->h ;
+
+	SDL_Rect posRect ;
+	int sizeX = 0;
+	int sizeY = 0;
+	SDL_GetWindowSize(myWindow, &sizeX, &sizeY);
+	posRect.x = sizeX / 2 - surface->w/2;
+	posRect.y = sizeY / 2 - surface->h/2;
+	posRect.w = sizeRect.w;
+	posRect.h = sizeRect.h;
+
+	auto&& text = std::make_tuple(surface, optimizedSurface, sizeRect, posRect);
+	myTextsToDraw.emplace_back(text);
 }
-#endif

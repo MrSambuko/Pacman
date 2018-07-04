@@ -56,23 +56,12 @@ void Ghost::Update( float aTime, const Pacman* aPacman )
 			const auto& tile = myWorld->GetRandomNearbyTile(myCurrentTileX, myCurrentTileY, myPreviousTileX, myPreviousTileY);
 			myNextTileX = tile->myX;
 			myNextTileY = tile->myY;
-
-#ifdef _DEBUG
-			int x = myNextTileX * TILE_SIZE + X_OFFSET;
-			int y = myNextTileY * TILE_SIZE + Y_OFFSET;
-			myDrawer->DrawLine(myPosition.myX + X_OFFSET, myPosition.myY + Y_OFFSET, x, y);
-#endif
 		}
 		else if (myState == DEAD && myPath.empty())
 		{
 			if (myCurrentTileX != START_GHOST_TILE_X && myCurrentTileY != START_GHOST_TILE_Y)
 			{
 				GoHome();
-#ifdef _DEBUG
-				int x = myPath[0]->myX * TILE_SIZE + X_OFFSET;
-				int y = myPath[0]->myY * TILE_SIZE + Y_OFFSET;
-				myDrawer->DrawLine(myPosition.myX + X_OFFSET, myPosition.myY + Y_OFFSET, x, y);
-#endif
 				popNext();
 			}
 			else
@@ -88,11 +77,6 @@ void Ghost::Update( float aTime, const Pacman* aPacman )
 			}
 			else
 			{
-#ifdef _DEBUG
-				int x = myPath[0]->myX * TILE_SIZE + X_OFFSET;
-				int y = myPath[0]->myY * TILE_SIZE + Y_OFFSET;
-				myDrawer->DrawLine(myPosition.myX + X_OFFSET, myPosition.myY + Y_OFFSET, x, y);
-#endif
 				popNext();
 			}
 		}

@@ -33,10 +33,7 @@ public:
 	void Draw();
 	void DrawLabel(const std::string& label);
 	void DrawText(const std::string& aText, int aX, int aY);
-
-#ifdef _DEBUG
-	void DrawLine(int fromX, int fromY, int toX, int toY);
-#endif
+	void DrawMiddleScreenText(const std::string& aText);
 
 private:
 	Drawer(SDL_Window* aWindow, SDL_Renderer* aRenderer, TTF_Font* aFont);

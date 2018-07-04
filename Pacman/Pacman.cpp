@@ -53,8 +53,18 @@ Pacman* Pacman::Create(Drawer* aDrawer)
 	return pacman;
 }
 
+Pacman::~Pacman()
+{
+	for (auto&& ghost : myGhosts)
+		delete ghost;
+
+	delete myAvatar;
+	delete myWorld;
+}
+
 Pacman::Pacman(Drawer* aDrawer)
-: myDrawer(aDrawer)
+: myState(LOSE_SCREEN)
+, myDrawer(aDrawer)
 , myGhostGhostCounter(0.f)
 , myLives(3)
 , myScore(0)
@@ -88,16 +98,18 @@ bool Pacman::Update(const SDL_Event* event, float aTime)
 	if (!updateInput(event))
 		return false;
 
-	if (CheckEndGameCondition())
+	if (myState == WIN_SCREEN || CheckEndGameCondition())
 	{
-		myDrawer->DrawText("You win!", 20, 70);
+		myDrawer->DrawMiddleScreenText("You win! Press any key to start over");
+		myState = WIN_SCREEN;
 		return true;
 	}
 	
-	if (myLives <= 0)
+	if (myState == LOSE_SCREEN || myLives <= 0)
 	{
-		myDrawer->DrawText("You lose!", 20, 70);	
-		return false;
+		myDrawer->DrawMiddleScreenText("Game Over! Press any key to start over");	
+		myState = LOSE_SCREEN;
+		return true;
 	}
 
 	MoveAvatar();
@@ -134,6 +146,7 @@ bool Pacman::Update(const SDL_Event* event, float aTime)
 	}
 	*/
 
+	bool hitPlayer = false;
 	for (auto& ghost : myGhosts)
 	{
 		const auto& state = ghost->GetState();
@@ -144,8 +157,7 @@ bool Pacman::Update(const SDL_Event* event, float aTime)
 			{
 			case CHASE:
 			case SCATTER:
-				--myLives;
-				Reset();
+				hitPlayer = true;
 				break;
 
 			case FRIGHTENED:
@@ -158,6 +170,14 @@ bool Pacman::Update(const SDL_Event* event, float aTime)
 			}
 		}
 
+		if (hitPlayer)
+			break;
+	}
+
+	if (hitPlayer)
+	{
+		--myLives;
+		Reset();
 	}
 
 	if (aTime > 0)
@@ -184,12 +204,24 @@ bool Pacman::updateInput(const SDL_Event* event)
 		else
 			*/myDirection ^= direction;
 		
-		for (const auto& directionVector : DIRECTION_TO_MOVE)
-			if (myDirection & directionVector.first)
-			{
-				myNextMovement += directionVector.second;
-				break;
-			}
+		switch(myState)
+		{
+		case GAMEPLAY:
+			for (const auto& directionVector : DIRECTION_TO_MOVE)
+				if (myDirection & directionVector.first)
+				{
+					myNextMovement += directionVector.second;
+					break;
+				}
+			break;
+
+		case WIN_SCREEN:
+		case LOSE_SCREEN:
+			Reset();
+			myState = GAMEPLAY;
+			return true;
+		}
+		
 	}
 
 
@@ -224,19 +256,22 @@ void Pacman::Reset() const
 
 void Pacman::Draw() const
 {
-	myWorld->Draw();
-	myAvatar->Draw();
-	for (const auto& ghost : myGhosts)
-		ghost->Draw();
+	if (myState == GAMEPLAY)
+	{
+		myWorld->Draw();
+		myAvatar->Draw();
+		for (const auto& ghost : myGhosts)
+			ghost->Draw();
 
-	myDrawer->DrawLabel(SCORE_LABEL);
-	myDrawer->DrawText(std::to_string(myScore), 110, 50);
+		myDrawer->DrawLabel(SCORE_LABEL);
+		myDrawer->DrawText(std::to_string(myScore), 110, 50);
 	
-	myDrawer->DrawLabel(LIVES_LABEL);
-	myDrawer->DrawText(std::to_string(myLives), 110, 80);
+		myDrawer->DrawLabel(LIVES_LABEL);
+		myDrawer->DrawText(std::to_string(myLives), 110, 80);
 
-	myDrawer->DrawLabel(FPS_LABEL);
-	myDrawer->DrawText(std::to_string(myFps), 950, 50);
+		myDrawer->DrawLabel(FPS_LABEL);
+		myDrawer->DrawText(std::to_string(myFps), 950, 50);
+	}
 
 	myDrawer->Draw();
 }
