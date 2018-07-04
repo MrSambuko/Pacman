@@ -38,7 +38,9 @@ private:
 	void InitMap();
 
 	void BuildTileGraph();
+#ifndef _DEBUG
 	void BuildPaths();
+#endif
 
 	Drawer* myDrawer = nullptr;
 

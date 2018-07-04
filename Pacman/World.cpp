@@ -24,7 +24,9 @@ void World::Init()
 	InitMap();
 
 	BuildTileGraph();
+#ifndef _DEBUG
 	BuildPaths();
+#endif
 }
 
 void World::InitMap()
@@ -93,10 +95,10 @@ void World::BuildTileGraph()
 		}
 	}
 }
-
+#ifndef _DEBUG 
 void World::BuildPaths()
 {
-#ifndef _DEBUG 
+
 	// build paths from each tile to each tile in graph
 	for (auto& tile1 = myGraph.begin(); tile1 != std::prev(myGraph.end()); ++tile1)
 	{
@@ -112,8 +114,8 @@ void World::BuildPaths()
 			std::reverse(myPaths[y][x].begin(), myPaths[y][x].end());	
 		}
 	}
-#endif
 }
+#endif
 
 void World::Draw() const
 {
@@ -183,7 +185,7 @@ PathmapTilePtr World::GetRandomNearbyTile(int currentTileX, int currentTileY, in
 {
 	const auto& tile = GetTile(currentTileX, currentTileY);
 	const auto& prevTile = GetTile(prevTileX, prevTileY);
-	auto& nearbyTiles = myGraph[tile];
+	auto nearbyTiles = myGraph[tile];
 	nearbyTiles.erase(prevTile);
 	const auto& size = nearbyTiles.size();
 	if (size == 0)
