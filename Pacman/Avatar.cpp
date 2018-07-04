@@ -49,8 +49,7 @@ void Avatar::Update(float aTime)
 	const Vector2f destination(static_cast<float>(myNextTileX * TILE_SIZE), static_cast<float>(myNextTileY * TILE_SIZE));
 	Vector2f direction = destination - myPosition;
 	const Vector2f& newDirection = { static_cast<float>(myNextTileX - myCurrentTileX), static_cast<float>(myNextTileY - myCurrentTileY) };
-	if (newDirection != NO_DIRECTION)
-		myDirection = std::move(newDirection);
+	myDirection = std::move(newDirection);
 
 	const float& distanceToMove = aTime * PLAYER_SPEED;
 
