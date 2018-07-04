@@ -63,7 +63,7 @@ Pacman::~Pacman()
 }
 
 Pacman::Pacman(Drawer* aDrawer)
-: myState(LOSE_SCREEN)
+: myState(GAMEPLAY)
 , myDrawer(aDrawer)
 , myGhostGhostCounter(0.f)
 , myLives(3)
