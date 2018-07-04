@@ -273,6 +273,7 @@ bool World::Pathfind(const PathmapTilePtr& aFromTile, const PathmapTilePtr& aToT
 		aList->push_back(current);
 		current = visited[current];
 	}
+	aList->push_back(aFromTile);
 
 	myPaths[x][y] = myPaths[y][x] = *aList;
 	return false;

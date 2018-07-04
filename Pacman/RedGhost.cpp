@@ -51,8 +51,10 @@ void RedGhost::GetNextTile( const Pacman* aPacman )
 		// each step choose player's tile as target
 		std::vector<PathmapTilePtr> pathToAvatar;
 		myWorld->GetPath(avatarPositionX, avatarPositionY, myCurrentTileX, myCurrentTileY, &pathToAvatar);
-		myNextTileX = pathToAvatar[0]->myX;
-		myNextTileY = pathToAvatar[0]->myY;
+		if (pathToAvatar.size() < 2)
+			break;
+		myNextTileX = pathToAvatar[1]->myX;
+		myNextTileY = pathToAvatar[1]->myY;
 		break;
 	}
 
@@ -61,8 +63,10 @@ void RedGhost::GetNextTile( const Pacman* aPacman )
 		{
 			std::vector<PathmapTilePtr> pathToAvatar;
 			myWorld->GetPath(avatarPositionX, avatarPositionY, myCurrentTileX, myCurrentTileY, &pathToAvatar);
-			myNextTileX = pathToAvatar[0]->myX;
-			myNextTileY = pathToAvatar[0]->myY;
+			if (pathToAvatar.size() < 2)
+				break;
+			myNextTileX = pathToAvatar[1]->myX;
+			myNextTileY = pathToAvatar[1]->myY;
 		}
 		else
 		{

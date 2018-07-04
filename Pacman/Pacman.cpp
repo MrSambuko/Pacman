@@ -38,6 +38,13 @@ std::unordered_map<int, Vector2f> DIRECTION_TO_MOVE =
 constexpr const char SCORE_LABEL[] = "Score: ";
 constexpr const char LIVES_LABEL[] = "Lives: ";
 constexpr const char FPS_LABEL[] = "FPS: ";
+
+constexpr const float CYAN_START_TIME = 15.f;
+constexpr const float ORANGE_START_TIME = 5.f;
+constexpr const float PINK_START_TIME = 10.f;
+constexpr const size_t CYAN_INDEX = 1;
+constexpr const size_t ORANGE_INDEX = 2;
+constexpr const size_t PINK_INDEX = 3;
 }
 
 Pacman* Pacman::Create(Drawer* aDrawer)
@@ -65,7 +72,8 @@ Pacman::~Pacman()
 Pacman::Pacman(Drawer* aDrawer)
 : myState(GAMEPLAY)
 , myDrawer(aDrawer)
-, myGhostGhostCounter(0.f)
+, myGhostSwitchStateTimer(0.f)
+, myGhostSpawnTimer(.0f)
 , myLives(3)
 , myScore(0)
 , myFps(0)
@@ -76,9 +84,9 @@ Pacman::Pacman(Drawer* aDrawer)
 	myAvatar = new Avatar(START_PLAYER_POS, aDrawer);
 
 	myGhosts[0] = new RedGhost(START_GHOST_POS, aDrawer, myWorld);
-	myGhosts[1] = new PinkGhost(START_GHOST_POS, aDrawer, myWorld);
-	myGhosts[2] = new OrangeGhost(START_GHOST_POS, aDrawer, myWorld);
-	myGhosts[3] = new CyanGhost(START_GHOST_POS, aDrawer, myWorld);
+	//myGhosts[1] = new PinkGhost(START_GHOST_POS, aDrawer, myWorld);
+	//myGhosts[2] = new OrangeGhost(START_GHOST_POS, aDrawer, myWorld);
+	//myGhosts[3] = new CyanGhost(START_GHOST_POS, aDrawer, myWorld);
 
 	myDrawer->RegisterTextLabel(SCORE_LABEL, 20, 50);
 	myDrawer->RegisterTextLabel(LIVES_LABEL, 20, 80);
@@ -112,73 +120,13 @@ bool Pacman::Update(const SDL_Event* event, float aTime)
 		return true;
 	}
 
-	MoveAvatar();
-	myAvatar->Update(aTime);
-	const auto& x = myAvatar->GetCurrentTileX();
-	const auto& y = myAvatar->GetCurrentTileY();
-	int xDir = 0;
-	int yDir = 0;
-	myAvatar->GetDirection(&xDir, &yDir);
-	for (auto& ghost : myGhosts)
-		ghost->Update(aTime, this);
+	CheckIntersections();
 
-	if (myWorld->HasIntersectedDot(myAvatar->GetPosition()))
-		myScore += 10;
+	UpdateAvatar(aTime);
 
-	myGhostGhostCounter -= aTime;
+	UpdateGhosts(aTime);
 
-	if (myWorld->HasIntersectedBigDot(myAvatar->GetPosition()))
-	{
-		myScore += 20;
-		myGhostGhostCounter = 20.f;
-		for (auto& ghost : myGhosts)
-			ghost->ChangeState(FRIGHTENED);
-	}
-
-	/*
-	if (myGhostGhostCounter <= 0)
-	{
-		static int i = 0;
-		const auto& newState = i++ % 2 ? SCATTER : CHASE;
-		for (auto& ghost : myGhosts)
-			ghost->ChangeState(newState);
-		myGhostGhostCounter = 20.f;
-	}
-	*/
-
-	bool hitPlayer = false;
-	for (auto& ghost : myGhosts)
-	{
-		const auto& state = ghost->GetState();
-		
-		if ((ghost->GetPosition() - myAvatar->GetPosition()).Length() < TILE_SIZE * 0.5f)
-		{
-			switch (state)
-			{
-			case CHASE:
-			case SCATTER:
-				hitPlayer = true;
-				break;
-
-			case FRIGHTENED:
-				myScore += 50;
-				ghost->ChangeState(DEAD);
-				break;
-
-			case DEAD:
-				break;
-			}
-		}
-
-		if (hitPlayer)
-			break;
-	}
-
-	if (hitPlayer)
-	{
-		--myLives;
-		Reset();
-	}
+	SpawnGhosts(aTime);
 
 	if (aTime > 0)
 		myFps = static_cast<int>((1 / aTime));
@@ -216,9 +164,11 @@ bool Pacman::updateInput(const SDL_Event* event)
 			break;
 
 		case WIN_SCREEN:
+			return false;
+			break;
+
 		case LOSE_SCREEN:
 			Reset();
-			myState = GAMEPLAY;
 			return true;
 		}
 		
@@ -247,11 +197,110 @@ bool Pacman::CheckEndGameCondition() const
 	return myWorld->DotsLeft() == 0;
 }
 
-void Pacman::Reset() const
+void Pacman::SpawnGhosts(float aTime)
+{
+	myGhostSpawnTimer += aTime;
+
+	if (myGhosts[CYAN_INDEX] == nullptr && myGhostSpawnTimer > CYAN_START_TIME)
+		myGhosts[CYAN_INDEX] = new CyanGhost(START_GHOST_POS, myDrawer, myWorld);
+
+	if (myGhosts[ORANGE_INDEX] == nullptr && myGhostSpawnTimer > ORANGE_START_TIME)
+		myGhosts[ORANGE_INDEX] = new OrangeGhost(START_GHOST_POS, myDrawer, myWorld);
+
+	if (myGhosts[PINK_INDEX] == nullptr && myGhostSpawnTimer > PINK_START_TIME)
+		myGhosts[PINK_INDEX] = new PinkGhost(START_GHOST_POS, myDrawer, myWorld);
+}
+
+void Pacman::UpdateAvatar(float aTime) const
+{
+	MoveAvatar();
+	myAvatar->Update(aTime);
+}
+
+void Pacman::UpdateGhosts(float aTime)
+{
+	const auto& x = myAvatar->GetCurrentTileX();
+	const auto& y = myAvatar->GetCurrentTileY();
+	int xDir = 0;
+	int yDir = 0;
+	myAvatar->GetDirection(&xDir, &yDir);
+	for (auto& ghost : myGhosts)
+		if (ghost != nullptr)
+			ghost->Update(aTime, this);
+
+	myGhostSwitchStateTimer -= aTime;
+	if (myGhostSwitchStateTimer <= 0)
+	{
+		static int i = 0;
+		const auto& newState = i++ % 2 ? SCATTER : CHASE;
+		for (auto& ghost : myGhosts)
+			if (ghost != nullptr)
+				ghost->ChangeState(newState);
+		myGhostSwitchStateTimer = 20.f;
+	}
+}
+
+void Pacman::CheckIntersections()
+{
+	if (myWorld->HasIntersectedDot(myAvatar->GetPosition()))
+		myScore += 10;
+
+	if (myWorld->HasIntersectedBigDot(myAvatar->GetPosition()))
+	{
+		myScore += 20;
+		myGhostSwitchStateTimer = 20.f;
+		for (auto& ghost : myGhosts)
+			if (ghost != nullptr)
+				ghost->ChangeState(FRIGHTENED);
+	}
+
+	bool hitPlayer = false;
+	for (auto& ghost : myGhosts)
+	{
+		if (ghost == nullptr)
+			continue;
+
+		const auto& state = ghost->GetState();
+		
+		if ((ghost->GetPosition() - myAvatar->GetPosition()).Length() < TILE_SIZE * 0.5f)
+		{
+			switch (state)
+			{
+			case CHASE:
+			case SCATTER:
+				hitPlayer = true;
+				break;
+
+			case FRIGHTENED:
+				myScore += 50;
+				ghost->ChangeState(DEAD);
+				break;
+
+			case DEAD:
+				break;
+			}
+		}
+
+		if (hitPlayer)
+			break;
+	}
+
+	if (hitPlayer)
+	{
+		--myLives;
+		Reset();
+	}
+}
+
+void Pacman::Reset()
 {
 	myAvatar->Reset(START_PLAYER_POS);
-	for (auto& ghost : myGhosts)
-		ghost->Reset(START_GHOST_POS);
+	myGhosts[0]->Reset(START_GHOST_POS);
+	delete myGhosts[CYAN_INDEX];  myGhosts[CYAN_INDEX] = nullptr;
+	delete myGhosts[ORANGE_INDEX];myGhosts[ORANGE_INDEX] = nullptr;
+	delete myGhosts[PINK_INDEX];  myGhosts[PINK_INDEX] = nullptr;
+	myGhostSpawnTimer = .0f;
+	myGhostSwitchStateTimer = .0f;
 }
 
 void Pacman::Draw() const
@@ -261,7 +310,8 @@ void Pacman::Draw() const
 		myWorld->Draw();
 		myAvatar->Draw();
 		for (const auto& ghost : myGhosts)
-			ghost->Draw();
+			if (ghost != nullptr)
+				ghost->Draw();
 
 		myDrawer->DrawLabel(SCORE_LABEL);
 		myDrawer->DrawText(std::to_string(myScore), 110, 50);

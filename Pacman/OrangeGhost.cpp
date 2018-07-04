@@ -31,18 +31,20 @@ void OrangeGhost::GetNextTile( const Pacman* aPacman )
 		{
 			std::vector<PathmapTilePtr> pathToAvatar;
 			myWorld->GetPath(BOTTOM_LEFT_X, BOTTOM_LEFT_Y, myCurrentTileX, myCurrentTileY, &pathToAvatar);
-			if (pathToAvatar.empty())
+			if (pathToAvatar.size() < 2)
 				break;
-			myNextTileX = pathToAvatar[0]->myX;
-			myNextTileY = pathToAvatar[0]->myY;
+			myNextTileX = pathToAvatar[1]->myX;
+			myNextTileY = pathToAvatar[1]->myY;
 		}
 		else
 		{
 			std::vector<PathmapTilePtr> pathToAvatar;
 			myWorld->GetPath(avatarPosX, avatarPosY, myCurrentTileX, myCurrentTileY, &pathToAvatar);
 
-			myNextTileX = pathToAvatar[0]->myX;
-			myNextTileY = pathToAvatar[0]->myY;
+			if (pathToAvatar.size() < 2)
+				break;
+			myNextTileX = pathToAvatar[1]->myX;
+			myNextTileY = pathToAvatar[1]->myY;
 		}
 		break;
 	}

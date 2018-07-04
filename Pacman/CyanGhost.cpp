@@ -36,7 +36,7 @@ void CyanGhost::GetNextTile( const Pacman* aPacman )
 			vectToAvatarX *= 2;
 			vectToAvatarY *= 2;
 
-			std::vector<PathmapTilePtr> path;
+			std::vector<PathmapTilePtr> pathToAvatar;
 			int x;
 			int y;
 			if (myWorld->TileIsValid(redGhostPosX+vectToAvatarX, redGhostPosY+vectToAvatarY))
@@ -50,10 +50,12 @@ void CyanGhost::GetNextTile( const Pacman* aPacman )
 				y = avatarPoxY;
 			}
 
-			myWorld->GetPath(x, y, myCurrentTileX, myCurrentTileY, &path);
+			myWorld->GetPath(x, y, myCurrentTileX, myCurrentTileY, &pathToAvatar);
+			if (pathToAvatar.size() < 2)
+				break;
 
-			myNextTileX = path[0]->myX;
-			myNextTileY = path[0]->myY;
+			myNextTileX = pathToAvatar[1]->myX;
+			myNextTileY = pathToAvatar[1]->myY;
 
 			break;
 		}

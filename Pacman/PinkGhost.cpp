@@ -18,7 +18,6 @@ PinkGhost::PinkGhost( const Vector2f& aPosition, Drawer* aDrawer, World* aWorld 
 {
 }
 
-#pragma optimize("", off)
 void PinkGhost::GetNextTile( const Pacman* aPacman )
 {
 	switch (myState)
@@ -36,14 +35,18 @@ void PinkGhost::GetNextTile( const Pacman* aPacman )
 			// if avatar stays at one place - simply go to him
 			std::vector<PathmapTilePtr> pathToAvatar;
 			myWorld->GetPath(avatarPositionX+avatarDirectionX, avatarPositionY+avatarDirectionY, myCurrentTileX, myCurrentTileY, &pathToAvatar);
-			if (pathToAvatar.empty())
+			if (pathToAvatar.size() < 2)
 				break;
 
-			myNextTileX = pathToAvatar[0]->myX;
-			myNextTileY = pathToAvatar[0]->myY;
+			myNextTileX = pathToAvatar[1]->myX;
+			myNextTileY = pathToAvatar[1]->myY;
 
 			break;
 		}
+
+		// check if we hit avatar
+		if (myCurrentTileX == avatarPositionX && myCurrentTileY == avatarPositionY)
+			break;
 
 		// get 4 tiles ahead of avatar
 		const bool modifyX = avatarDirectionX != 0;
@@ -63,11 +66,11 @@ void PinkGhost::GetNextTile( const Pacman* aPacman )
 
 		std::vector<PathmapTilePtr> pathToAvatar;
 		myWorld->GetPath(avatarPositionX+avatarDirectionX, avatarPositionY+avatarDirectionY, myCurrentTileX, myCurrentTileY, &pathToAvatar);
-		if (pathToAvatar.empty())
-			break;
+		if (pathToAvatar.size() < 2)
+				break;
 
-		myNextTileX = pathToAvatar[0]->myX;
-		myNextTileY = pathToAvatar[0]->myY;
+		myNextTileX = pathToAvatar[1]->myX;
+		myNextTileY = pathToAvatar[1]->myY;
 		break;
 	}
 
@@ -86,4 +89,3 @@ void PinkGhost::GetNextTile( const Pacman* aPacman )
 		break;
 	}
 }
-#pragma optimize("", on)

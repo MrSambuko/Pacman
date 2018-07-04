@@ -38,13 +38,19 @@ private:
 	void MoveAvatar() const;
 	bool CheckEndGameCondition() const;
 
-	void Reset() const;
+	void SpawnGhosts(float aTime);
+	void UpdateAvatar(float aTime) const;
+	void UpdateGhosts(float aTime);
+	void CheckIntersections();
+
+	void Reset();
 
 private:
 	GameState myState;
 	Drawer* myDrawer;
 
-	float myGhostGhostCounter;
+	float myGhostSwitchStateTimer;
+	float myGhostSpawnTimer;
 
 	int myLives;
 	int myScore;
