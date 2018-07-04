@@ -2,7 +2,7 @@
 
 #include "Vector2f.h"
 
-constexpr const int MAX_TILE_NUM = 29;
+constexpr const int MAX_TILE_NUM = 30;
 constexpr const int TILE_SIZE = 22;
 
 constexpr const int NO_MOVE = 0;
